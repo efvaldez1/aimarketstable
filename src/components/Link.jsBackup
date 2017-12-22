@@ -1,0 +1,89 @@
+import React, { Component } from 'react'
+import { GC_USER_ID } from '../constants'
+import { timeDifferenceForDate } from '../utils'
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
+
+class Link extends Component {
+
+  render() {
+    const userId = localStorage.getItem(GC_USER_ID)
+    console.log('link')
+    console.log(this.props.link)
+    return (
+      <div>
+      <div><strong> Description:</strong> {this.props.link.description} </div>
+      <div> <strong> URL: </strong> <a href={this.props.link.url}>{this.props.link.url}</a></div>
+      <div> <strong> Category: </strong> {this.props.link.category}  </div>
+      <div> <strong> Tags: </strong>
+          {this.props.link.tags.map((tagItem)=>
+          (<li>{tagItem.name}</li>)
+          )
+          }
+      </div>
+      <div> <strong> No. Of Offers: </strong> {this.props.link.offers.length}  </div>
+      <div> <strong> Offers: </strong>
+          {this.props.link.offers.map((offerItem)=>
+          ( <div>
+            <li>Offer By: {offerItem.offerBy.name}</li>
+            <li> amount: {offerItem.amount}</li>
+            <li> description: {offerItem.offerdescription}</li>
+            <br/>
+            </div>
+          )
+          )
+          }
+      </div>
+      <div className='flex items-center'>
+           {userId && <div className='ml1 gray f11' onClick={() => this._voteForLink()}>Vote ▲ </div>}
+      </div>
+      <div className='f6 lh-copy gray'>  {this.props.link.votes.length} votes | by {this.props.link.postedBy ? this.props.link.postedBy.name : 'Unknown'} {timeDifferenceForDate(this.props.link.createdAt)}</div>
+      </div>
+    )
+  }
+
+  _voteForLink = async () => {
+    const userId = localStorage.getItem(GC_USER_ID)
+    const voterIds = this.props.link.votes.map(vote => vote.user.id)
+    if (voterIds.includes(userId)) {
+      console.log(`User (${userId}) already voted for this link.`)
+      return
+    }
+
+    const linkId = this.props.link.id
+    await this.props.createVoteMutation({
+      variables: {
+        userId,
+        linkId
+      },
+      update: (store, { data: { createVote } }) => {
+        this.props.updateStoreAfterVote(store, createVote, linkId)
+      }
+    })
+  }
+
+}
+
+const CREATE_VOTE_MUTATION = gql`
+  mutation CreateVoteMutation($userId: ID!, $linkId: ID!) {
+    createVote(userId: $userId, linkId: $linkId) {
+      id
+      link {
+        votes {
+          id
+          user {
+            id
+          }
+        }
+      }
+      user {
+        id
+      }
+    }
+  }
+`
+
+export default graphql(CREATE_VOTE_MUTATION, {
+  name: 'createVoteMutation'
+})(Link)
+Ku

@@ -1,0 +1,66 @@
+type Tag @model{
+  id: ID! @isUnique
+  name: String!
+  link: [Link!]! @relation(name: "LinkTags")
+}
+
+type Link @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  description: String!
+  url: String!
+  postedBy: User @relation(name: "UsersLinks")
+  votes: [Vote!]! @relation(name: "VotesOnLink")
+  category: String!
+  offers: [Offer!]! @relation(name: "LinksOffer")
+  tags: [Tag!]! @relation(name: "LinkTags")
+}
+
+type Offer @model {
+  id: ID! @isUnique
+  amount: String!
+  offerdescription: String!
+  link: Link! @relation(name: "LinksOffer")
+  offerBy: User @relation(name: "UserOffers")
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  comments: [Comment!]! @relation(name: "OfferComments")
+}
+
+type Comment @model {
+  id: ID! @isUnique
+  content: String!
+  offer: Offer! @relation(name: "OfferComments")
+  author: User @relation(name: "UserComments")
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type User @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  position: String!
+  name: String!
+  
+  email: String @isUnique
+  password: String
+  offers: [Offer!]! @relation(name: "UserOffers")
+  links: [Link!]! @relation(name: "UsersLinks")
+  votes: [Vote!]! @relation(name: "UsersVotes")
+  comments: [Comment!]! @relation(name: "UserComments")
+}
+
+type Vote @model {
+  id: ID! @isUnique
+  user: User! @relation(name: "UsersVotes")
+  link: Link! @relation(name: "VotesOnLink")
+}
+
+
+type Category @model {
+  id: ID! @isUnique
+  name: String!
+}
