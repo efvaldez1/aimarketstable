@@ -21,6 +21,7 @@ import {
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import Img from 'react-image'
+import CircularProgress from 'material-ui/CircularProgress';
 
 class Profile extends Component {
   render() {
@@ -28,7 +29,7 @@ class Profile extends Component {
     console.log('userId')
     console.log(userId)
     if (this.props.allUsersQuery && this.props.allUsersQuery.loading) {
-    return <div>Loading</div>
+    return  <div><CircularProgress size={90} thickness={7}/></div>
   }
 
   if (this.props.allUsersQuery && this.props.allUsersQuery.error) {

@@ -13,7 +13,7 @@ import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import CircularProgress from 'material-ui/CircularProgress';
 const style = {
   margin: 12,
 };
@@ -39,14 +39,11 @@ class CreateLink extends Component {
   }
 
   handleSelect(event){
-    // /alert(this.refs.form.mySelect.value)
-    //alert(event.target.value)
-    //console.log(this.refs.form.mySelect.value
+
     console.log(event.target.value)
     this.setState({ category: event.target.value})
   }
   handleMultiSelect = (tag) => {
-    //console.log('You\'ve selected:', tag)
     this.setState({tag })
     var temp = tag.slice()
     var tempoptions=[]
@@ -54,10 +51,9 @@ class CreateLink extends Component {
     {tempoptions.push({'id':item.value,'name':item.name})}
     )
 
-    //this.setState({tagsTemp: tempoptions})
     console.log('multi')
     console.log(tag)
-    //console.log(tagsTemp)
+
   }
 
   state = {
@@ -91,7 +87,7 @@ class CreateLink extends Component {
 
   render() {
     if (this.props.allTagQuery && this.props.allTagQuery.loading) {
-      return <div>Loading</div>
+      return <div><CircularProgress size={90} thickness={7}/></div>
     }
 
     if (this.props.allTagQuery && this.props.allTagQuery.error) {

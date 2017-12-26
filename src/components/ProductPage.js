@@ -21,6 +21,7 @@ import {
 } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
+import CircularProgress from 'material-ui/CircularProgress';
 import Img from 'react-image'
 //React-PDF
 import { Document, Page } from 'react-pdf';
@@ -33,7 +34,7 @@ class ProductPage extends Component {
   }
   render() {
     if (this.props.allLinksQuery && this.props.allLinksQuery.loading) {
-      return <div>Loading</div>
+      return <div><CircularProgress size={90} thickness={7}/></div>
     }
 
     if (this.props.allLinksQuery && this.props.allLinksQuery.error) {

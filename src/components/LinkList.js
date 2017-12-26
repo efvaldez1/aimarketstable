@@ -4,6 +4,9 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { LINKS_PER_PAGE } from '../constants'
 
+
+//Material UI
+import CircularProgress from 'material-ui/CircularProgress';
 class LinkList extends Component {
 
   componentDidMount() {
@@ -14,7 +17,7 @@ class LinkList extends Component {
   render() {
 
     if (this.props.allLinksQuery && this.props.allLinksQuery.loading) {
-      return <div>Loading</div>
+      return <div><CircularProgress size={90} thickness={7}/></div>
     }
 
     if (this.props.allLinksQuery && this.props.allLinksQuery.error) {

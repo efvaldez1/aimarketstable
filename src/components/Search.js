@@ -9,6 +9,7 @@ import CategoryList from './CategoryList'
 // Material UI
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import CircularProgress from 'material-ui/CircularProgress';
 class Search extends Component {
   constructor() {
     super();
@@ -35,7 +36,7 @@ class Search extends Component {
 
   render() {
     if (this.props.allTagQuery && this.props.allTagQuery.loading) {
-      return <div>Loading</div>
+      return <div><CircularProgress size={90} thickness={7}/></div>
     }
 
     if (this.props.allTagQuery && this.props.allTagQuery.error) {
