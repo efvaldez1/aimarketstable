@@ -31,21 +31,21 @@ class Login extends Component {
           hintText="Your name"
           value={this.state.name}
           onChange={(e) => this.setState({ name: e.target.value })}
-          ></TextField><br />
+          ></TextField>
           }
 
           <TextField
           hintText="Your email address"
           value={this.state.email}
           onChange={(e) => this.setState({ email: e.target.value })}
-          ></TextField><br />
+          ></TextField>
 
           <TextField
           hintText="Choose a safe password"
           type="password"
           value={this.state.password}
           onChange={(e) => this.setState({ password: e.target.value })}
-          /><br />
+          />
         </div>
         <div>
           <RaisedButton style={style} label={this.state.login ? 'login' : 'create account' } primary={true} onClick={() => this._confirm()} />
