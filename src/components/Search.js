@@ -109,7 +109,6 @@ const ALL_LINKS_SEARCH_QUERY = gql`
     allLinks(filter: {
       OR:
       [
-
             {category:$categoryText},
             {
               OR: [{

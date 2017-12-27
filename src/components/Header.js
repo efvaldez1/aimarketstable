@@ -15,7 +15,6 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import BalanceIcon from 'material-ui/svg-icons/action/account-balance';
 
-
 import AppBar from 'material-ui/AppBar';
 class Header extends Component {
   render() {
@@ -52,7 +51,7 @@ class Header extends Component {
         >
         {userId &&
         <div>
-        {<Link to='/profile' ><MenuItem primaryText="Profile"></MenuItem></Link>}
+        {<Link to={'/profile/'+userId} ><MenuItem primaryText="Profile"></MenuItem></Link>}
         {<MenuItem primaryText="Settings/Edit Profile" ></MenuItem>}
         </div>
         }
@@ -66,7 +65,9 @@ class Header extends Component {
               <MenuItem primaryText="Logout" />
           </div>
           :
-            <MenuItem primaryText={<Link to='/login' >Login</Link>} />
+              <div>
+            {<Link to='/login' ><MenuItem primaryText="Login"></MenuItem></Link>}
+            </div>
         }
 
         </IconMenu>

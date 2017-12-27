@@ -51,7 +51,7 @@ handleRequestClose = () => {
       <div>
       <Card>
         <CardHeader
-          title={this.props.link.postedBy.name}
+          title={<Link to={'/profile/'+this.props.link.postedBy.id} > {this.props.link.postedBy.name}</Link>}
           subtitle="User's Position"
           subtitle="Company Or Position"
           avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}

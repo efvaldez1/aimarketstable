@@ -29,9 +29,10 @@ const middlewareAuthLink = new ApolloLink((operation, forward) => {
 })
 
 const httpLinkWithAuthToken = middlewareAuthLink.concat(httpLink)
-
+console.log("subs")
+console.log(localStorage.getItem(GC_AUTH_TOKEN))
 const wsLink = new WebSocketLink({
-  uri: `wss://subscriptions.graph.cool/v1/${serviceId}`,
+  uri: `wss://subscriptions.ap-northeast-1.graph.cool/v1/${serviceId}`,
   options: {
     reconnect: true,
     timeout: 30000,

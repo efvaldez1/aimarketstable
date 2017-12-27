@@ -33,7 +33,7 @@ class App extends Component {
             <Route exact path='/createcategory' component={CreateCategory} />
             <Route exact path='/categorylist' component={CategoryList} />
             <Route exact path='/new/:page' component={LinkList} />
-            <Route exact path='/profile' component={Profile} />
+            <Route exact path='/profile/:id' component={Profile} />
           </Switch>
         </div>
       </div>

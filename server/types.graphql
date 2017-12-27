@@ -43,8 +43,13 @@ type User @model {
   createdAt: DateTime!
   updatedAt: DateTime!
   position: String!
+  about: String!
+  linkedin: String!
+  twitter: String!
+  medium: String!
+  github: String!
   name: String!
-  
+
   email: String @isUnique
   password: String
   offers: [Offer!]! @relation(name: "UserOffers")
