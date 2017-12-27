@@ -105,7 +105,7 @@ class LinkList extends Component {
                 updatedAt
                 tags{
                   id
-
+                  name
                 }
                 postedBy {
                   id
@@ -113,6 +113,12 @@ class LinkList extends Component {
                 }
                 offers{
                   id
+                  amount
+                  offerdescription
+                  offerBy{
+                    id
+                    name
+                  }
                 }
                 votes {
                   id
@@ -138,9 +144,9 @@ class LinkList extends Component {
             ...previous,
             allLinks: newAllLinks
           }
-          
-          console.log(newAllLinks.length)
-          console.log(previous)
+
+          console.log("result")
+          console.log(result)
           return result
         }
       })

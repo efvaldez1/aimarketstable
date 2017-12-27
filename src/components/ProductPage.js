@@ -101,8 +101,9 @@ class ProductPage extends Component {
           <FlatButton label="Github" />
         </CardActions>
       </Card>
-            <div className='flex mt2 items-start'>
-            <div className='ml1'>
+            <div>
+            <div>
+
               <div> <strong>ID:</strong> {link.id} </div>
               <div> <strong>Title:</strong> {link.title} </div>
 
@@ -120,8 +121,11 @@ class ProductPage extends Component {
               <br/>
               <div>
               {link.offers.map((offerItem)=>(
-                <Card>
+                <div>
+                <Card key={offerItem.id}>
+                  <strong> Offer By: </strong>
                   <CardHeader
+
                     title={offerItem.offerBy.name}
                     subtitle="User's Position"
                     avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
@@ -139,7 +143,7 @@ class ProductPage extends Component {
                       <label><strong>Comments : </strong></label>
                       {offerItem.comments.map((commentItem)=>
                         (
-                          <Card>
+                          <Card key={commentItem.id}>
                             <CardHeader
                               title={commentItem.author.name}
                               subtitle="User's Position"
@@ -169,6 +173,8 @@ class ProductPage extends Component {
                   <CreateComment offerId={offerItem.id} productId={link.id}/>
                   </CardActions>
                 </Card>
+                <br/>
+                </div>
               )
               )
               }
@@ -183,12 +189,232 @@ class ProductPage extends Component {
     )
   }
 
-  _subscribeToNewOffers= () => {
-      //implement this
+
+  _subscribeToNewOffers = () => {
+    console.log("OFFER SUBS")
+    this.props.allLinksQuery.subscribeToMore({
+      document: gql`
+        subscription {
+          Offer(filter: {
+              mutation_in: [CREATED, UPDATED, DELETED]
+          }) {
+            node {
+              id
+              amount
+              offerdescription
+              link{
+                id
+                title
+                url
+                category
+                postedBy{
+                  id
+                  name
+                }
+                description
+                votes{
+                  id
+                }
+                offers{
+                  id
+                  amount
+                  offerdescription
+                  offerBy{
+                    id
+                    name
+                  }
+                  comments{
+                    id
+                    content
+                    createdAt
+                    updatedAt
+                    author{
+                      id
+                      name
+                    }
+                  }
+                }
+                tags{
+                  id
+                  name
+                }
+                createdAt
+                updatedAt
+              }
+              offerBy{
+                id
+                name
+              }
+              createdAt
+              updatedAt
+              comments{
+                id
+                content
+                updatedAt
+                createdAt
+                offer{
+                  id
+                  amount
+                  offerdescription
+                  offerBy{
+                    id
+                    name
+                  }
+                  link{
+                    id
+                    title
+                    category
+                    url
+                    tags{
+                      id
+                      name
+                    }
+                    offers{
+                      id
+                      amount
+                      offerdescription
+                      createdAt
+                      updatedAt
+                    }
+                    createdAt
+                    updatedAt
+                    postedBy{
+                      id
+                      name
+                    }
+                    votes{
+                      id
+                    }
+                  }
+                }
+                author{
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+      `,
+      updateQuery: (previous, { subscriptionData }) => {
+        console.log("update offers")
+        console.log(subscriptionData.data.Offer.node)
+        const offeredLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Offer.node.link.id)
+        const link = subscriptionData.data.Offer.node.link
+        console.log('link1')
+        console.log(link)
+        const newAllLinks = previous.allLinks.slice()
+        newAllLinks[offeredLinkIndex] = link
+        const result = {
+          ...previous,
+          allLinks: newAllLinks
+        }
+        console.log("offer subscription")
+        console.log(result)
+        return result
+      }
+    })
   }
 
   _subscribeToNewComments = () => {
-    // implement this
+    console.log("COMMENT SUBS")
+    this.props.allLinksQuery.subscribeToMore({
+      document: gql`
+        subscription {
+          Comment(filter: {
+              mutation_in: [CREATED, UPDATED, DELETED]
+          }) {
+            node {
+              id
+              content
+              offer{
+                id
+                offerdescription
+                offerBy{
+                  id
+                  name
+                }
+                comments{
+                  id
+                  content
+                  author{
+                    id
+                    name
+                  }
+                  createdAt
+                  updatedAt
+                }
+                updatedAt
+                createdAt
+                link{
+                  id
+                  title
+                  createdAt
+                  url
+                  description
+                  category
+                  tags{
+                    id
+                    name
+                  }
+                  postedBy{
+                    id
+                    name
+                  }
+                  votes{
+                    id
+                  }
+                  offers{
+                    id
+                    amount
+                    offerdescription
+                    offerBy{
+                      id
+                      name
+                    }
+                    comments{
+                      id
+                      content
+                      author{
+                        id
+                        name
+                      }
+                      createdAt
+                      updatedAt
+                    }
+                  }
+                }
+              }
+              author{
+                id
+                name
+              }
+              createdAt
+              updatedAt
+            }
+          }
+        }
+      `,
+      updateQuery: (previous, { subscriptionData }) => {
+        console.log("update comments")
+        console.log(subscriptionData.data.Comment.node)
+        console.log(subscriptionData.data.Comment.node.offer)
+        console.log(subscriptionData.data.Comment.node.offer.link)
+        const commentedLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Comment.node.offer.link.id)
+        const link = subscriptionData.data.Comment.node.offer.link
+        console.log("linkx")
+        console.log(link)
+        const newAllLinks = previous.allLinks.slice()
+        newAllLinks[commentedLinkIndex] = link
+        const result = {
+          ...previous,
+          allLinks: newAllLinks
+        }
+        console.log("comment subscription")
+        console.log(result)
+        return result
+      }
+    })
 
   }
 
@@ -204,6 +430,8 @@ console.log(this.props)
 //  }
 //}
 //`
+
+
 const ALL_LINKS_QUERY = gql`
   query AllLinksQuery{
     allLinks {
