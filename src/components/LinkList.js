@@ -13,6 +13,7 @@ class LinkList extends Component {
     this._subscribeToNewLinks()
     this._subscribeToNewVotes()
     this._subscribeToUpdatedLinks()
+    this._subscribeToDeletedLinks()
   }
 
   render() {
@@ -166,7 +167,7 @@ class LinkList extends Component {
       document: gql`
         subscription {
           Link(filter: {
-            mutation_in: [ UPDATED]
+            mutation_in: [UPDATED]
           }) {
             node {
               id
@@ -205,6 +206,7 @@ class LinkList extends Component {
               title
               description
               url
+              category
             }
           }
         }
@@ -222,6 +224,75 @@ class LinkList extends Component {
           allLinks: newAllLinks
         }
         console.log("link update subscription")
+        console.log(result)
+        return result
+      }
+    })
+  }
+
+  _subscribeToDeletedLinks = () => {
+    console.log("DELETE LINKS SUBS")
+    this.props.allLinksQuery.subscribeToMore({
+      document: gql`
+        subscription {
+          Link(filter: {
+            mutation_in: [DELETED]
+          }) {
+            node {
+              id
+              title
+              url
+              description
+              category
+              createdAt
+              updatedAt
+              tags{
+                id
+                name
+              }
+              postedBy {
+                id
+                name
+              }
+              offers{
+                id
+                amount
+                offerdescription
+                offerBy{
+                  id
+                  name
+                }
+              }
+              votes {
+                id
+                user {
+                  id
+                }
+              }
+            }
+            mutation
+            previousValues{
+              title
+              description
+              url
+              category
+            }
+          }
+        }
+      `,
+      updateQuery: (previous, { subscriptionData }) => {
+        console.log("deleted links subs")
+        console.log(subscriptionData.data.Link.node)
+        console.log(subscriptionData.data.Link)
+        const updatedLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Link.node.id)
+        const link = subscriptionData.data.Link.node
+        const newAllLinks = previous.allLinks.slice()
+        newAllLinks[updatedLinkIndex] = link
+        const result = {
+          ...previous,
+          allLinks: newAllLinks
+        }
+        console.log("link delete subscription")
         console.log(result)
         return result
       }

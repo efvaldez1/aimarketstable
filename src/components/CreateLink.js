@@ -187,6 +187,8 @@ class CreateLink extends Component {
           query: ALL_LINKS_QUERY,
           variables: { first, skip, orderBy }
         })
+        console.log("data all links")
+        console.log(data.alllinks)
         data.allLinks.splice(0,0,createLink)
         data.allLinks.pop()
         store.writeQuery({

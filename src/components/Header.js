@@ -52,7 +52,7 @@ class Header extends Component {
         {userId &&
         <div>
         {<Link to={'/profile/'+userId} ><MenuItem primaryText="Profile"></MenuItem></Link>}
-        {<MenuItem primaryText="Settings/Edit Profile" ></MenuItem>}
+        {<MenuItem primaryText="Settings (NOT YET IMPLEMENTED)" ></MenuItem>}
         </div>
         }
 
