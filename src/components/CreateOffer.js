@@ -74,7 +74,7 @@ class CreateOffer extends Component {
 
         <RaisedButton primary={true} label="Submit Offer" onClick={() => this._createOffer()}/>
         <br/>
-        
+
         <Snackbar
           open={this.state.open}
           message="Submitted your offer!"
@@ -153,6 +153,8 @@ mutation CreateOfferMutation($amount:String!,$offerdescription:String!,$link:ID!
   ){
     id
     amount
+    createdAt
+    updatedAt
     offerdescription
     link{
       id
@@ -162,7 +164,7 @@ mutation CreateOfferMutation($amount:String!,$offerdescription:String!,$link:ID!
     {
       id
     }
-    createdAt
+
   }
 }
 `

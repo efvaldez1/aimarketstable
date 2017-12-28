@@ -2,6 +2,8 @@ type Tag @model{
   id: ID! @isUnique
   name: String!
   link: [Link!]! @relation(name: "LinkTags")
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Link @model {
@@ -68,4 +70,5 @@ type Vote @model {
 type Category @model {
   id: ID! @isUnique
   name: String!
+  
 }

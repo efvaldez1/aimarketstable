@@ -51,22 +51,23 @@ handleRequestClose = () => {
       <div>
       <Card>
         <CardHeader
-          title={<Link to={'/profile/'+this.props.link.postedBy.id} > {this.props.link.postedBy.name}</Link>}
+          title={<Link to={'/profile/'+this.props.link.postedBy.id} > {this.props.link.postedBy.name ? this.props.link.postedBy.name : 'Unknown'}</Link>}
           subtitle="User's Position"
           subtitle="Company Or Position"
           avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
         />
         <CardText>
+        <div><strong> ID: </strong> {this.props.link.id}</div>
         <div><strong>Title: </strong> <Link to={'/product/'+this.props.link.id} > {this.props.link.title}</Link></div>
         <div><strong> Description:</strong> {this.props.link.description} </div>
         <div> <strong> URL: </strong> <a href={this.props.link.url}>{this.props.link.url}</a></div>
         <div> <strong> Category: </strong> {this.props.link.category}  </div>
         <div> <strong> No. Of Tags: </strong> {this.props.link.tags.length||"0"}  </div>
-
+        <div><strong> Summited On:</strong> {this.props.link.createdAt} ({timeDifferenceForDate(this.props.link.createdAt)})</div>
         <div className='flex items-center'>
              {userId && <div className='ml1 gray f11' onClick={() => this._voteForLink()}>Vote ▲ </div>}
         </div>
-        <div className='f6 lh-copy gray'>  {this.props.link.votes.length} votes | by {this.props.link.postedBy ? this.props.link.postedBy.name : 'Unknown'} {timeDifferenceForDate(this.props.link.createdAt)}</div>
+        <div className='f6 lh-copy gray'>  {this.props.link.votes.length} votes </div>
         </CardText>
         <CardActions>
           <label> Share On: </label>

@@ -33,6 +33,7 @@ class ProductPage extends Component {
 
   }
   render() {
+    const userId = localStorage.getItem(GC_USER_ID)
     if (this.props.allLinksQuery && this.props.allLinksQuery.loading) {
       return <div><CircularProgress size={90} thickness={7}/></div>
     }
@@ -65,12 +66,12 @@ class ProductPage extends Component {
       <div>
       <Card>
         <CardHeader
-          title={link.postedBy.name}
+          title={link.postedBy.name ?link.postedBy.name : 'Unknown'}
           subtitle="Position Or Company"
           avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
         />
         <CardMedia
-          overlay={<CardTitle title="Overlay title" subtitle="Overlay subtitle" />}
+          overlay={<CardTitle title={link.title} subtitle={"By " + link.postedBy.name} />}
         >
           <img src="http://americanconstruction.net/wp-content/uploads/2015/10/upload-empty.png" alt="" />
         </CardMedia>
@@ -80,15 +81,16 @@ class ProductPage extends Component {
           <div>{link.description}</div>
           <br/>
           <div> <strong> URL: </strong> {link.url}</div>
-          <div> <strong> Category: </strong> {link.category}</div>
+          <div> <strong> Category: </strong> {link.category || 'None'}</div>
+          <div> <strong> Submitted On: </strong> {link.createdAt} ({timeDifferenceForDate(link.createdAt)}) </div>
           <div> <strong> Tags: </strong>
-              {link.tags.map((tagItem)=>
+              {link.tags.length!==0 ? link.tags.map((tagItem)=>
               (<a>{tagItem.name} </a>)
-              )
+            ) : 'None'
               }
           </div>
           <div> <strong> No. Of Offers: </strong> {link.offers.length||"N/A"} </div>
-          <div className='f6 lh-copy gray'>{link.votes.length} votes | by {link.postedBy ?link.postedBy.name : 'Unknown'} {timeDifferenceForDate(link.createdAt)}</div>
+          <div className='f6 lh-copy gray'>{link.votes.length} votes </div>
           <br/>
         </CardText>
         <CardActions>
@@ -102,28 +104,20 @@ class ProductPage extends Component {
         </CardActions>
       </Card>
             <div>
+            <br/>
+            <label><strong>Offers :</strong></label>
+            <br/>
             <div>
-
-              <div> <strong>ID:</strong> {link.id} </div>
-              <div> <strong>Title:</strong> {link.title} </div>
-
-              <div><strong> Description:</strong> {link.description} </div>
-              <div> <strong> URL: </strong> <a href={link.url}>{link.url}</a></div>
-              <div> <strong> Category: </strong> {link.category}  </div>
-              <div> <strong> Tags: </strong>
-                  {link.tags.map((tagItem)=>
-                  (<a>{tagItem.name} </a>)
-                  )
-                  }
-              </div>
-
-              <CreateOffer linkId={link.id}/>
-              <br/>
+              {userId &&
+                <div>
+                <CreateOffer linkId={link.id}/>
+                <br/>
+                </div>
+              }
               <div>
               {link.offers.map((offerItem)=>(
                 <div>
                 <Card key={offerItem.id}>
-                  <strong> Offer By: </strong>
                   <CardHeader
 
                     title={offerItem.offerBy.name}
@@ -137,7 +131,7 @@ class ProductPage extends Component {
                       <a>Description: {offerItem.offerdescription}</a><br/>
 
                       <div className='f6 lh-copy gray'>
-                        <a>Created At: {timeDifferenceForDate(offerItem.createdAt)}</a><br/>
+                        <a><strong> Created: </strong>{timeDifferenceForDate(offerItem.createdAt)} </a><br/>
                       </div>
 
                       <label><strong>Comments : </strong></label>
@@ -154,7 +148,7 @@ class ProductPage extends Component {
                                 <a>{commentItem.content}</a>
                                 <br/>
                                 <div className='f6 lh-copy gray'>
-                                  <a>Created At: {timeDifferenceForDate(commentItem.createdAt)}</a><br/>
+                                  <a> Created: {timeDifferenceForDate(commentItem.createdAt)}</a><br/>
                                 </div>
 
                                 <br/>
@@ -162,15 +156,15 @@ class ProductPage extends Component {
                             </CardText>
 
                           </Card>
-
-
                         )
                       )
                       }
                       </div>
                   </CardText>
                   <CardActions>
+                  {userId &&
                   <CreateComment offerId={offerItem.id} productId={link.id}/>
+                  }
                   </CardActions>
                 </Card>
                 <br/>
@@ -438,6 +432,7 @@ const ALL_LINKS_QUERY = gql`
       id
       title
       createdAt
+      updatedAt
       url
       description
       category
@@ -454,6 +449,8 @@ const ALL_LINKS_QUERY = gql`
       offers{
         id
         amount
+        createdAt
+        updatedAt
         offerdescription
         offerBy{
           id
@@ -462,6 +459,8 @@ const ALL_LINKS_QUERY = gql`
         comments{
           id
           content
+          createdAt
+          updatedAt
           author{
             id
             name

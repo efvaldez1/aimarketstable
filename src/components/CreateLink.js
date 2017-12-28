@@ -144,10 +144,7 @@ class CreateLink extends Component {
             multi={true}
         		options={options}
           />
-
-
         </div>
-
         <RaisedButton onClick={() => this._createLink ()} label="Submit" primary={true} style={style} />
       </div>
     )
@@ -219,6 +216,7 @@ const CREATE_LINK_MUTATION = gql`
             id
             title
             createdAt
+            updatedAt
             url
             description
             category
@@ -250,66 +248,7 @@ query AllTagQuery{
   }
 }
 `
-
-//export default graphql(CREATE_LINK_MUTATION, { name: 'createLinkMutation' })(CreateLink)
-//export default graphql(CREATE_LINK_MUTATION, { name: 'createLinkMutation' })(CreateLink)
 export default compose(
   graphql(ALL_TAG_QUERY, {name:'allTagQuery'}),
   graphql(CREATE_LINK_MUTATION, { name: 'createLinkMutation' })
 )(CreateLink)
-
-
-// <div >
-//   <div className='flex flex-column mt3'>
-//   <input
-//     className='mb2'
-//     value={this.state.title}
-//     onChange={(e) => this.setState({ title: e.target.value })}
-//     type='text'
-//     placeholder='Title of the Product'
-//   />
-//
-//   <label>{this.state.title}</label>
-//   <textarea
-//       className='mb2'
-//       value={this.state.description}
-//       onChange={(e) => this.setState({ description: e.target.value })}
-//       placeholder='A description for the product'
-//   />
-//
-//   <input
-//       className='mb2'
-//       value={this.state.url}
-//       onChange={(e) => this.setState({ url: e.target.value })}
-//       type='text'
-//       placeholder='The URL for the product'
-//   />
-//
-//   <div onChange={this.handleSelect}>
-//   Category :
-//   <CategoryList  name='mySelect'
-//   />
-//   </div>
-//
-//
-//     <label>Select as many</label>
-//
-//     <Select
-//
-//       onChange={this.handleMultiSelect}
-//       value={this.state.tag}
-//       multi={true}
-//       options={options}
-//     />
-//
-//   </div>
-//
-//
-//
-//   <button
-//     onClick={() => this._createLink ()}
-//   >
-//     Submit
-//   </button>
-//
-// </div>

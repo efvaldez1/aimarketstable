@@ -117,6 +117,7 @@ mutation CreateCommentMutation($content:String!,$authorId:ID!,$offerId:ID!){
       offerdescription
     }
     createdAt
+    updatedAt
   }
 }
 `

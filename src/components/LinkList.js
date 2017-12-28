@@ -12,6 +12,7 @@ class LinkList extends Component {
   componentDidMount() {
     this._subscribeToNewLinks()
     this._subscribeToNewVotes()
+    this._subscribeToUpdatedLinks()
   }
 
   render() {
@@ -80,7 +81,6 @@ class LinkList extends Component {
     const first = isNewPage ? LINKS_PER_PAGE : 100
     const orderBy = isNewPage ? "createdAt_DESC" : null
     const data = store.readQuery({ query: ALL_LINKS_QUERY, variables: { first, skip, orderBy } })
-
     const votedLink = data.allLinks.find(link => link.id === linkId)
     votedLink.votes = createVote.link.votes
     store.writeQuery({ query: ALL_LINKS_QUERY, data })
@@ -93,7 +93,7 @@ class LinkList extends Component {
         document: gql`
           subscription {
             Link(filter: {
-              mutation_in: [CREATED, UPDATED, DELETED]
+              mutation_in: [CREATED]
             }) {
               node {
                 id
@@ -127,13 +127,21 @@ class LinkList extends Component {
                   }
                 }
               }
+              updatedFields
+              previousValues{
+                title
+                description
+                url
+              }
             }
           }
         `,
         updateQuery: (previous, { subscriptionData }) => {
           console.log("update links")
           console.log(subscriptionData.data.Link.node)
-          console.log(subscriptionData.Link)
+          console.log(subscriptionData.data.Link)
+          console.log("prev")
+          console.log(previous.allLinks)
           const newAllLinks = [
             subscriptionData.data.Link.node,
             ...previous.allLinks
@@ -152,6 +160,74 @@ class LinkList extends Component {
       })
     }
 
+  _subscribeToUpdatedLinks = () => {
+    console.log("UPDATE LINKS SUBS")
+    this.props.allLinksQuery.subscribeToMore({
+      document: gql`
+        subscription {
+          Link(filter: {
+            mutation_in: [ UPDATED]
+          }) {
+            node {
+              id
+              title
+              url
+              description
+              category
+              createdAt
+              updatedAt
+              tags{
+                id
+                name
+              }
+              postedBy {
+                id
+                name
+              }
+              offers{
+                id
+                amount
+                offerdescription
+                offerBy{
+                  id
+                  name
+                }
+              }
+              votes {
+                id
+                user {
+                  id
+                }
+              }
+            }
+            updatedFields
+            previousValues{
+              title
+              description
+              url
+            }
+          }
+        }
+      `,
+      updateQuery: (previous, { subscriptionData }) => {
+        console.log("we update links")
+        console.log(subscriptionData.data.Link.node)
+        console.log(subscriptionData.data.Link)
+        const updatedLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Link.node.id)
+        const link = subscriptionData.data.Link.node
+        const newAllLinks = previous.allLinks.slice()
+        newAllLinks[updatedLinkIndex] = link
+        const result = {
+          ...previous,
+          allLinks: newAllLinks
+        }
+        console.log("link update subscription")
+        console.log(result)
+        return result
+      }
+    })
+  }
+
   _subscribeToNewVotes = () => {
     console.log("VOTE SUBS")
     this.props.allLinksQuery.subscribeToMore({
@@ -167,7 +243,6 @@ class LinkList extends Component {
                 url
                 description
                 createdAt
-
                 postedBy {
                   id
                   name

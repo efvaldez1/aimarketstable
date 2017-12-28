@@ -24,8 +24,8 @@ import Img from 'react-image';
 import CircularProgress from 'material-ui/CircularProgress';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-//import LinkList from './LinkList'
-// copy the UI from Link or ProductPage
+
+
 class Profile extends Component {
   state = {
     newName:'',
