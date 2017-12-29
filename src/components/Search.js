@@ -10,6 +10,15 @@ import CategoryList from './CategoryList'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+
+const names = [
+  {name:'Oliver Hansen',value:1},
+  {name:'Van Henry', value:2},
+  {name:'April Tucker',value:3}
+];
+
 class Search extends Component {
   constructor() {
     super();
@@ -21,17 +30,39 @@ class Search extends Component {
     links: [],
     searchText: '',
     categoryText:'',
-    tag:[]
+    tags:[]
   }
 
+  handleChange = (event, index, tags) => {
+      this.setState({tags});
+      console.log("handle change")
+      console.log(index)
+      console.log(event)
+      console.log(tags)
+  }
+
+  menuItems(tags) {
+    return names.map((nameItem) => (
+      <MenuItem
+        key={nameItem.value}
+        insetChildren={true}
+        checked={tags && tags.indexOf(nameItem) > -1}
+        value={nameItem.value}
+        primaryText={nameItem.name}
+      />
+    ));
+  }
+
+
   handleSelect(event){
+    console.log("selected " + event.target.value )
     this.setState({ categoryText: event.target.value})
   }
 
-  handleMultiSelect = (tag) => {
-    this.setState({tag })
+  handleMultiSelect = (tags) => {
+    this.setState({tags })
     console.log('multi')
-    console.log(tag)
+    console.log(tags)
   }
 
   render() {
@@ -44,6 +75,9 @@ class Search extends Component {
       return <div>Error</div>
     }
     const tagToRender = this.props.allTagQuery.allTags
+    const {tags} = this.state
+    console.log('t')
+    console.log(tags)
     const options=[]
     tagToRender.map((tag,id)=>
     {
@@ -71,6 +105,16 @@ class Search extends Component {
           </div>
           <br/>
 
+          <SelectField
+            multiple={true}
+            hintText="Select a name"
+            value={tags }
+            onChange={this.handleChange}
+          >
+            {this.menuItems(tags)}
+          </SelectField>
+
+          <br/>
           <RaisedButton primary={true} label="Search" onClick={() => this._executeSearch()} />
 
         </div>

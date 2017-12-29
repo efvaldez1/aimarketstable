@@ -25,15 +25,51 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Img from 'react-image'
 //React-PDF
 import { Document, Page } from 'react-pdf';
+import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 
 class ProductPage extends Component {
   componentDidMount() {
     this._subscribeToNewOffers()
     this._subscribeToNewComments()
+    this._subscribeToUpdatedLinks()
 
   }
+  state = {
+    link:{},
+    newTitle:'',
+    newDescription:'',
+    newURL:'',
+    newCategory:'',
+    newAuthor:'',
+    open: false,
+  }
+
+  handleOpen = () => {
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+
+
   render() {
     const userId = localStorage.getItem(GC_USER_ID)
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={false}
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        onClick={() => this._updateLink()}
+      />,
+    ]
+
     if (this.props.allLinksQuery && this.props.allLinksQuery.loading) {
       return <div><CircularProgress size={90} thickness={7}/></div>
     }
@@ -56,12 +92,19 @@ class ProductPage extends Component {
     }
     console.log("found")
     console.log(link)
+    this.link=link
+    console.log("this")
+    console.log(this.link)
   //  const product = this.props.findLinkQuery.findLink({
   //    variables: {
   //    Id
   //  }
   //})
     //console.log(product)
+    let  EditButton=null
+    if(link.postedBy.id===userId) {
+        EditButton = <RaisedButton primary={true} label="Edit Submission" onClick={this.handleOpen} />
+    }
     return (
       <div>
       <Card>
@@ -83,6 +126,7 @@ class ProductPage extends Component {
           <div> <strong> URL: </strong> {link.url}</div>
           <div> <strong> Category: </strong> {link.category || 'None'}</div>
           <div> <strong> Submitted On: </strong> {link.createdAt} ({timeDifferenceForDate(link.createdAt)}) </div>
+          <div> <strong> Last updated at: </strong> {link.updatedAt} ({timeDifferenceForDate(link.updatedAt)}) </div>
           <div> <strong> Tags: </strong>
               {link.tags.length!==0 ? link.tags.map((tagItem)=>
               (<a>{tagItem.name} </a>)
@@ -91,6 +135,54 @@ class ProductPage extends Component {
           </div>
           <div> <strong> No. Of Offers: </strong> {link.offers.length||"N/A"} </div>
           <div className='f6 lh-copy gray'>{link.votes.length} votes </div>
+          <div>
+          {EditButton}
+
+            <Dialog
+              title="Edit Submision"
+              actions={actions}
+              modal={false}
+              open={this.state.open}
+              autoScrollBodyContent={true}
+            >
+            <div>
+            <TextField
+            
+              floatingLabelText="Title"
+              defaultValue={link.title}
+              fullWidth={true}
+              onChange={(e) => this.setState({ newTitle: e.target.value })}
+            />
+
+            <TextField
+              floatingLabelText="Description"
+              defaultValue={link.description}
+
+              fullWidth={true}
+              multiLine={true}
+              rows={2}
+              rowsMax={4}
+
+              onChange={(e) => this.setState({ newDescription: e.target.value })}
+            />
+
+            <TextField
+              floatingLabelText="URL"
+              fullWidth={true}
+              defaultValue={link.url}
+
+              onChange={(e) => this.setState({ newURL: e.target.value })}
+            />
+            <TextField
+              floatingLabelText="Category"
+              fullWidth={true}
+              defaultValue={link.category}
+              onChange={(e) => this.setState({ newCategory: e.target.value })}
+            />
+
+            </div>
+            </Dialog>
+          </div>
           <br/>
         </CardText>
         <CardActions>
@@ -101,6 +193,7 @@ class ProductPage extends Component {
           <br/>
           <label>  <strong> Other Links: </strong> </label>
           <FlatButton label="Github" />
+
         </CardActions>
       </Card>
             <div>
@@ -183,7 +276,57 @@ class ProductPage extends Component {
     )
   }
 
+  _updateLink = async() => {
+    console.log('heyy');
+    console.log(this.link)
+    var linkId = this.link.id
+    var newTitle = ''
+    var newDescription = ''
+    var newURL = ''
+    var newCategory = ''
 
+    if(this.state.newTitle===''){
+      newTitle=this.link.title
+    }else{
+      newTitle=this.state.newTitle
+    }
+    if(this.state.newDescription===''){
+      newDescription=this.link.description
+    }else{
+      newDescription=this.state.newDescription
+    }
+    if(this.state.newURL===''){
+      newURL=this.link.url
+    }else{
+      newURL= this.state.newURL
+    }
+    if(this.state.newCategory===''){
+      newCategory=this.link.category
+    }else{
+      newCategory=this.state.newCategory
+    }
+
+    console.log(linkId)
+    console.log(newTitle)
+    console.log(newDescription)
+    console.log(newURL)
+    console.log(newCategory)
+    await this.props.updateLinkMutation({
+      variables: {
+        linkId,
+        newTitle,
+        newDescription,
+        newURL,
+        newCategory
+      }
+    }
+  )
+    this.setState({open: false,})
+  }
+
+  _subscribeToUpdatedLinks= () => {
+    //
+  }
   _subscribeToNewOffers = () => {
     console.log("OFFER SUBS")
     this.props.allLinksQuery.subscribeToMore({
@@ -425,7 +568,26 @@ console.log(this.props)
 //}
 //`
 
+const UPDATE_LINK_MUTATION = gql`
+mutation updateLinkMutation($linkId:ID! , $newTitle:String! , $newDescription:String! , $newURL: String! , $newCategory:String!){
+updateLink(
+  id:$linkId
+  title:$newTitle
+  description:$newDescription
+  url:$newURL
+  category:$newCategory
+)
+  {
+    id
+    title
+    description
+    url
+    category
+    updatedAt
+  }
 
+}
+`
 const ALL_LINKS_QUERY = gql`
   query AllLinksQuery{
     allLinks {
@@ -504,5 +666,6 @@ const CREATE_VOTE_MUTATION = gql`
 export default compose(
   graphql(ALL_LINKS_QUERY, {name: 'allLinksQuery'}),
   graphql(CREATE_VOTE_MUTATION, {name: 'createVoteMutation'}),
+  graphql(UPDATE_LINK_MUTATION, {name: 'updateLinkMutation'})
   //graphql(FIND_LINK_QUERY, {name: 'findLinkQuery'})
 ) (ProductPage)

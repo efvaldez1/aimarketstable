@@ -99,7 +99,6 @@ class CreateOffer extends Component {
       userId
     }
   }
-
   )
   this.setState({open: true,})
   //do I still need to push() if I make subscription work?
