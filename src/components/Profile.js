@@ -209,7 +209,37 @@ _deleteSubmissions = async () => {
   console.log('update user')
 
   const userId = this.props.findUserQuery.User.id
-  const {newName,newEmail,newPosition,newAbout,newEducation } = this.state
+
+  var newName = ''
+  var newEmail = ''
+  var newPosition = ''
+  var newAbout = ''
+  var newEducation = ''
+  if(this.state.newName===''){
+    newName=this.props.findUserQuery.User.name
+  }else{
+    newName=this.state.newName
+  }
+  if(this.state.newEmail===''){
+    newEmail=this.props.findUserQuery.User.email
+  }else{
+    newEmail=this.state.newEmail
+  }
+  if(this.state.newPosition===''){
+    newPosition=this.props.findUserQuery.User.position
+  }else{
+    newPosition= this.state.newPosition
+  }
+  if(this.state.newAbout===''){
+    newAbout=this.props.findUserQuery.User.about
+  }else{
+    newAbout=this.state.newAbout
+  }
+  if(this.state.newEducation===''){
+    newEducation=this.props.findUserQuery.User.education
+  }else{
+    newEducation=this.state.newEducation
+  }
   console.log("vars")
   console.log(userId)
   console.log(newName)

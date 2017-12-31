@@ -187,7 +187,7 @@ class ProductPage extends Component {
               {link.offers.map((offerItem)=>(
                 <div key={offerItem.id}>
 
-                <Card >
+                <Card key={offerItem.id}>
                   <CardHeader
                     title={offerItem.offerBy.name}
                     subtitle="User's Position"
