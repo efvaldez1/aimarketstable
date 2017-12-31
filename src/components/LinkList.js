@@ -30,7 +30,7 @@ class LinkList extends Component {
     const isNewPage = this.props.location.pathname.includes('new')
     const linksToRender = this._getLinksToRender(isNewPage)
     const page = parseInt(this.props.match.params.page, 10)
-    console.log('link list')
+
     console.log(linksToRender)
 
     return (
@@ -89,7 +89,7 @@ class LinkList extends Component {
 
 
   _subscribeToNewLinks = () => {
-      console.log(" LINKS SUBS")
+      console.log("NEW LINK SUBS")
       this.props.allLinksQuery.subscribeToMore({
         document: gql`
           subscription {
@@ -138,24 +138,18 @@ class LinkList extends Component {
           }
         `,
         updateQuery: (previous, { subscriptionData }) => {
-          console.log("update links")
-          console.log(subscriptionData.data.Link.node)
-          console.log(subscriptionData.data.Link)
-          console.log("prev")
-          console.log(previous.allLinks)
+
           const newAllLinks = [
             subscriptionData.data.Link.node,
             ...previous.allLinks
           ]
-          console.log("new all links")
-          console.log(newAllLinks)
+
           const result = {
             ...previous,
             allLinks: newAllLinks
           }
 
-          console.log("result")
-          console.log(result)
+
           return result
         }
       })
@@ -212,9 +206,7 @@ class LinkList extends Component {
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-        console.log("we update links")
-        console.log(subscriptionData.data.Link.node)
-        console.log(subscriptionData.data.Link)
+
         const updatedLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Link.node.id)
         const link = subscriptionData.data.Link.node
         const newAllLinks = previous.allLinks.slice()
@@ -223,8 +215,7 @@ class LinkList extends Component {
           ...previous,
           allLinks: newAllLinks
         }
-        console.log("link update subscription")
-        console.log(result)
+
         return result
       }
     })
@@ -281,9 +272,7 @@ class LinkList extends Component {
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-        console.log("deleted links subs")
-        console.log(subscriptionData.data.Link.node)
-        console.log(subscriptionData.data.Link)
+
         const updatedLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Link.node.id)
         const link = subscriptionData.data.Link.node
         const newAllLinks = previous.allLinks.slice()
@@ -292,8 +281,7 @@ class LinkList extends Component {
           ...previous,
           allLinks: newAllLinks
         }
-        console.log("link delete subscription")
-        console.log(result)
+
         return result
       }
     })
@@ -342,8 +330,7 @@ class LinkList extends Component {
           ...previous,
           allLinks: newAllLinks
         }
-        console.log("vote subscription")
-        console.log(result)
+
         return result
       }
     })

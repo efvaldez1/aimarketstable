@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { graphql,compose,withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import Link from './Link'
-import Select from 'react-select'
-import Multiselect from './Multiselect'
+//import Select from 'react-select'
+//import Multiselect from './Multiselect'
 import CategoryList from './CategoryList'
 
 // Material UI
@@ -29,17 +29,10 @@ class Search extends Component {
   state = {
     links: [],
     searchText: '',
-    categoryText:'',
-    tags:[]
+    categoryText:'Publication',
+    values:[]
   }
-
-  handleChange = (event, index, tags) => {
-      this.setState({tags});
-      console.log("handle change")
-      console.log(index)
-      console.log(event)
-      console.log(tags)
-  }
+  handleChange = (event, index, values) => this.setState({values});
 
   menuItems(tags) {
     return names.map((nameItem) => (
@@ -55,17 +48,32 @@ class Search extends Component {
 
 
   handleSelect(event){
-    console.log("selected " + event.target.value )
-    this.setState({ categoryText: event.target.value})
+
+    var cat = event.target.innerText
+    this.setState({ categoryText: cat})
+
   }
 
   handleMultiSelect = (tags) => {
     this.setState({tags })
-    console.log('multi')
-    console.log(tags)
+
+  }
+  selectCategory(selectedValue){
+
+    this.setState({ categoryText: selectedValue.target.value })
+
   }
 
   render() {
+    if (this.props.allCategoryQuery && this.props.allCategoryQuery.loading) {
+      return <div><CircularProgress size={90} thickness={7}/></div>
+    }
+
+    if (this.props.allCategoryQuery && this.props.allCategoryQuery.error) {
+      return <div>Error</div>
+
+    }
+
     if (this.props.allTagQuery && this.props.allTagQuery.loading) {
       return <div><CircularProgress size={90} thickness={7}/></div>
     }
@@ -74,16 +82,12 @@ class Search extends Component {
       console.log(this.props.allTagQuery.error)
       return <div>Error</div>
     }
+
     const tagToRender = this.props.allTagQuery.allTags
-    const {tags} = this.state
-    console.log('t')
-    console.log(tags)
-    const options=[]
-    tagToRender.map((tag,id)=>
-    {
-      options.push({'value':tag.id,'label':tag.name})
-    }
-    )
+
+
+    
+    const {values} = this.state;
     return (
 
       <div>
@@ -100,19 +104,31 @@ class Search extends Component {
 
 
 
-          <div onChange={this.handleSelect}>
-            <div> <label>Category :</label></div><CategoryList  name='mySelect' />
-          </div>
+          <label> Category : </label>
+          <CategoryList ref="categorySelector" name="myCategoryList" onChange={this.selectCategory.bind(this)} />
+
           <br/>
 
           <SelectField
-            multiple={true}
-            hintText="Select a name"
-            value={tags }
-            onChange={this.handleChange}
+          multiple={true}
+          hintText="Select Tag/s"
+          value={values}
+          onChange={this.handleChange}
           >
-            {this.menuItems(tags)}
-          </SelectField>
+
+          {tagToRender.map((tagItem)=>
+            (
+              <MenuItem
+                key={tagItem.id}
+                insetChildren={true}
+                checked={values && values.indexOf(tagItem) > -1}
+                value={tagItem.id}
+                primaryText={tagItem.name}
+              />
+            )
+            )
+          }
+        </SelectField>
 
           <br/>
           <RaisedButton primary={true} label="Search" onClick={() => this._executeSearch()} />
@@ -124,19 +140,11 @@ class Search extends Component {
   }
 
   _executeSearch = async () => {
-    const tagIds=[]
-    this.state.tag.map((item)=>
-    {tagIds.push(item.value)
-      console.log(item)
-    }
-    )
-
-    console.log('tag options')
-    console.log(tagIds)
-
-    const { searchText, categoryText } = this.state
-    console.log(searchText)
-    console.log(categoryText)
+    console.log("search params")
+    const { searchText, categoryText,values } = this.state
+    console.log("Title or Desc: " + searchText)
+    console.log("Category: " +categoryText)
+    console.log("tag ids: " + values)
     const result = await this.props.client.query({
       query: ALL_LINKS_SEARCH_QUERY,
       variables: { searchText ,categoryText}
@@ -151,7 +159,7 @@ class Search extends Component {
 const ALL_LINKS_SEARCH_QUERY = gql`
   query AllLinksSearchQuery($searchText:String!, $categoryText:String!) {
     allLinks(filter: {
-      OR:
+      AND:
       [
             {category:$categoryText},
             {
@@ -170,6 +178,7 @@ const ALL_LINKS_SEARCH_QUERY = gql`
       description
       category
       createdAt
+      updatedAt
       postedBy {
         id
         name
@@ -204,9 +213,20 @@ query AllTagQuery{
   }
 }
 `
+const ALL_CATEGORY_QUERY = gql `
+query AllCategoryQuery{
+  #graphql pluralises automatically
+  allCategories{
+    id
+    name
+  }
+}
+`
+
 //export default withApollo(Search)
 export default compose(
   graphql(ALL_TAG_QUERY, {name:'allTagQuery'}),
+  graphql(ALL_CATEGORY_QUERY,{name:'allCategoryQuery'}),
   withApollo
 )(Search)
 // /https://stackoverflow.com/questions/41515226/graphql-filter-data-in-an-array

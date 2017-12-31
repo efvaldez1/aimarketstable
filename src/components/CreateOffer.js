@@ -2,16 +2,14 @@ import React, { Component } from 'react'
 import {graphql,compose} from 'react-apollo'
 import gql from 'graphql-tag'
 import { GC_USER_ID } from '../constants'
-import { withRouter } from 'react-router'
+// /import { withRouter } from 'react-router'
 
 //material UI
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 class CreateOffer extends Component {
-  constructor(props) {
-    super(props);
-  }
+
   handleSelect(event){
     console.log("product chosen")
     this.setState({ link: event.target.value})
@@ -31,24 +29,14 @@ class CreateOffer extends Component {
     });
   };
 
-  handleChange(evt) {
-    const amount = (evt.target.validity.valid) ? evt.target.value : amount;
-    console.log(typeof(amount))
-    //this.setState({ amount:amount });
-  }
+  //handleChange(evt) {
+  //  const amount = (evt.target.validity.valid) ? evt.target.value : amount;
+  //  console.log(typeof(amount))
+  //  this.setState({ amount:amount });
+  //}
   render() {
-    const allLinks=this.props.allLinksQuery.allLinks
     console.log("CreateOfferJS")
-    console.log(this.props.linkId)
 
-    if (this.props.allLinksQuery && this.props.allLinksQuery.loading) {
-      return <div>Loading</div>
-    }
-
-    if (this.props.allLinksQuery && this.props.allLinksQuery.error) {
-      console.log(this.props.allLinksQuery.error)
-      return <div>Error</div>
-    }
     return (
 
       <div>
@@ -65,6 +53,7 @@ class CreateOffer extends Component {
         <TextField
           hintText="Enter Message"
           value={this.state.offerdescription}
+          fullWidth={true}
           onChange={(e) => this.setState({ offerdescription: e.target.value })}
         />
 
@@ -107,39 +96,6 @@ class CreateOffer extends Component {
 
 }
 
-export const ALL_LINKS_QUERY = gql`
-  query AllLinksQuery($first: Int, $skip: Int, $orderBy: LinkOrderBy) {
-    allLinks(first: $first, skip: $skip, orderBy: $orderBy) {
-      id
-      title
-      createdAt
-      url
-      description
-      category
-      postedBy {
-        id
-        name
-      }
-      votes {
-        id
-        user {
-          id
-        }
-      }
-      tags {
-        id
-        name
-        link
-        {
-          id
-        }
-      }
-    }
-    _allLinksMeta {
-      count
-    }
-  }
-`
 
 const CREATE_OFFER_MUTATION = gql`
 mutation CreateOfferMutation($amount:String!,$offerdescription:String!,$link:ID!,$userId:ID!){
@@ -168,7 +124,7 @@ mutation CreateOfferMutation($amount:String!,$offerdescription:String!,$link:ID!
 }
 `
 export default compose(
-  graphql(ALL_LINKS_QUERY, {name:'allLinksQuery'}),
+
   graphql(CREATE_OFFER_MUTATION, { name: 'createOfferMutation' })
 )(CreateOffer)
 //export default graphql(CREATE_OFFER_MUTATION,{name:'createOfferMutation'}) (CreateOffer)

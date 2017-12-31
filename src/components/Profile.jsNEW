@@ -1,19 +1,26 @@
 import React, { Component } from 'react'
 import { GC_USER_ID } from '../constants'
-//import { timeDifferenceForDate } from '../utils'
+import { timeDifferenceForDate } from '../utils'
 import { graphql,compose } from 'react-apollo'
 import gql from 'graphql-tag'
-//import { Switch, Route, Redirect } from 'react-router-dom'
-//import { withRouter } from 'react-router'
-//import { Link } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
+import { withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
 
 // Material UI
-import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card'
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar';
-
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
-//import IconButton from 'material-ui/IconButton';
-//import Img from 'react-image';
+import IconButton from 'material-ui/IconButton';
+import Img from 'react-image';
 import CircularProgress from 'material-ui/CircularProgress';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -36,7 +43,7 @@ class Profile extends Component {
 
     userId:'',
     showCheckboxes: false,
-    selectedProducts:[1],
+    selectedProducts:[],
     open:false,
   }
 
@@ -56,9 +63,10 @@ class Profile extends Component {
   };
 
   handleRowSelection = (selectedRows) => {
-    console.log('selected rows are')
+    console.log('selected rows')
     console.log(selectedRows)
     this.setState({
+
       selectedProducts: selectedRows,
     });
   };
@@ -69,25 +77,51 @@ class Profile extends Component {
     //const userId = localStorage.getItem(GC_USER_ID)
     console.log(userId)
 
-
-    if (this.props.findUserQuery && this.props.findUserQuery.loading) {
-          return  <div><CircularProgress size={90} thickness={7}/></div>
-        }
-
-    if (this.props.findUserQuery && this.props.findUserQuery.error) {
-          console.log(this.props.allUsersQuery.error)
-          return <div>Error</div>
-        }
-    //const user ={}
-    //all users then traverse till you find specific user
-    const user = this.props.findUserQuery.User
-    console.log("found")
-    console.log(user)
-    var canSelect=false
-    if(localStorage.getItem(GC_USER_ID)===user.id){
-              canSelect= true
+    if(this.props.findUserQuery && this.props.findUserQuery.loading){
+      return <div><CircularProgress size={90} thickness={7}/></div>
     }
 
+
+    if(this.props.findUserQuery && this.props.findUserQuery.error){
+      console.log(this.props.allUsersQuery.error)
+      return <div>Error</div>
+    }
+
+    //const user ={}
+    //all users then traverse till you find specific user
+    const result = this.props.allFindUserQuery.FindUserQuery
+    console.log(result)
+    const len = result.length
+    console.log("len")
+    console.log(len)
+    for (var i = 0; i < len; i++) {
+     if(result[i].id===userId)
+    {
+      console.log("hey")
+      console.log(result[i])
+      this.user = result[i]
+     }
+    }
+
+
+
+    console.log("found")
+    console.log(this.user)
+    var canSelect=false
+    if(localStorage.getItem(GC_USER_ID)===this.user.id){
+              console.log("if")
+              console.log(userId)
+              console.log(this.user.id)
+              canSelect= true
+    }
+    console.log(canSelect)
+    console.log("update email and name")
+    {this.user.links.map((link,id)=>
+          (
+            console.log(id)
+          )
+        )
+    }
     const actions = [
         <FlatButton
           label="Cancel"
@@ -100,7 +134,6 @@ class Profile extends Component {
           onClick={() => this._updateUser()}
         />,
       ]
-
       return (
         <div>
         <div>
@@ -109,18 +142,18 @@ class Profile extends Component {
           <div >
             <Card>
               <CardHeader
-                title={user.name}
-                subtitle={user.position|| "No position or job description yet"}
+                title={this.user.name}
+                subtitle={this.user.position}
                 avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
               />
-              <CardTitle  />
+              <CardTitle title="About" />
               <CardText>
-                <div>{user.about || "No description yet"}</div>
+                <div>{this.user.about}</div>
                 <br/>
-                <div> Email : {user.email} </div>
-                <div>Education : {user.education|| "N/A"}</div>
-                <div> No.Of Products Submitted : {user.links.length||"N/A"} </div>
-                <div> No. Of Offers Created : {user.offers.length||"N/A"} </div>
+                <div> Email : {this.user.email} </div>
+                <div>Education : {this.user.education}</div>
+                <div> No.Of Products Submitted : {this.user.links.length||"N/A"} </div>
+                <div> No. Of Offers Created : {this.user.offers.length||"N/A"} </div>
                 <RaisedButton primary={true} label="Edit Profile" onClick={this.handleOpen} />
 
                 <Dialog
@@ -133,21 +166,21 @@ class Profile extends Component {
 
                 <TextField
                   floatingLabelText="Name"
-                  defaultValue={user.name}
+                  defaultValue={this.user.name}
                   fullWidth={true}
                   onChange={(e) => this.setState({ newName: e.target.value })}
                 />
 
                 <TextField
                   floatingLabelText="Email"
-                  defaultValue={user.email}
+                  defaultValue={this.user.email}
                   fullWidth={true}
                   onChange={(e) => this.setState({ newEmail: e.target.value })}
                 />
 
                 <TextField
                   floatingLabelText="Job Description or Position"
-                  defaultValue={user.position}
+                  defaultValue={this.user.position}
                   fullWidth={true}
                   onChange={(e) => this.setState({ newPosition: e.target.value })}
                 />
@@ -157,14 +190,14 @@ class Profile extends Component {
                   multiLine={true}
                   rows={2}
                   rowsMax={4}
-                  defaultValue={user.about}
+                  defaultValue={this.user.about}
                   onChange={(e) => this.setState({ newAbout: e.target.value })}
                 />
 
                 <TextField
                   floatingLabelText="Education"
                   fullWidth={true}
-                  defaultValue={user.education}
+                  defaultValue={this.user.education}
                   onChange={(e) => this.setState({ newEducation: e.target.value })}
                 />
 
@@ -181,50 +214,68 @@ class Profile extends Component {
           </div>
           </Tab>
 
+          <Tab label = 'Submissions'>
+          <div>
+            <strong> Submissions: </strong>
+            <Table selectable={canSelect} displaySelectAll={canSelect} multiSelectable={canSelect} onRowSelection={this.handleRowSelection}>
+              <TableHeader adjustForCheckbox={canSelect} >
+                <TableRow>
+                <TableHeaderColumn>Index</TableHeaderColumn>
+                  <TableHeaderColumn>ID</TableHeaderColumn>
+                  <TableHeaderColumn>Title</TableHeaderColumn>
+                  <TableHeaderColumn>Category</TableHeaderColumn>
 
+                  <TableHeaderColumn>Date Created</TableHeaderColumn>
+                  <TableHeaderColumn>Last Updated</TableHeaderColumn>
+                  <TableHeaderColumn>No. Of Votes</TableHeaderColumn>
+                  <TableHeaderColumn>No. Of Offers</TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody >
+                {this.user.links.map((link,id)=>
+                  (
+                    <TableRow key={link.id} selected={this.isSelected(id)}>
+                      <TableRowColumn> {id+1}</TableRowColumn>
+                      <TableRowColumn> <Link to={'/product/'+link.id} > {link.id}</Link></TableRowColumn>
+                      <TableRowColumn> {link.title}</TableRowColumn>
+                      <TableRowColumn> {link.category || 'NA'}</TableRowColumn>
+                      <TableRowColumn> {link.createdAt}</TableRowColumn>
+                      <TableRowColumn> {link.updatedAt}</TableRowColumn>
+                      <TableRowColumn> {link.votes.length || "0"}</TableRowColumn>
+                      <TableRowColumn> {link.offers.length || "0"}</TableRowColumn>23
+                    </TableRow>
+                  ) || 'N/A'
+                )
+                }
+              </TableBody>
+            </Table>
+
+          </div>
+          </Tab>
         </Tabs>
         </div>
         </div>
       )
   }
 
-
-_deleteSubmissions = async () => {
-
-  console.log("del submission")
-  console.log(this.state.selectedProduct)
-  console.log(this.props.findUserQuery.User.links)
-  const linkId = this.props.findUserQuery.User.links[this.state.selectedProducts[0]]
-
-  await this.props.deleteLinkMutation({
-    variables: {
-      linkId
-    }
-  })
-  console.log('done')
-  console.log(linkId)
-}
-
   _updateUser = async () => {
   console.log('update user')
 
-  const userId = this.props.findUserQuery.User.id
-  const {newName,newEmail,newPosition,newAbout,newEducation } = this.state
+  const userId = this.user.id
+  const {newName,newEmail,newAbout,newEducation } = this.state
   console.log("vars")
   console.log(userId)
   console.log(newName)
   console.log(newEmail)
   console.log(newAbout)
   console.log(newEducation)
-  console.log(newPosition)
   await this.props.updateUserMutation({
     variables: {
       userId,
       newName,
       newEmail,
       newAbout,
-      newEducation,
-      newPosition
+      newEducation
     }
   }
 
@@ -234,46 +285,23 @@ _deleteSubmissions = async () => {
 
 }
 
-
+// why wont findUseQuery(ID) wont work
 const FIND_USER_QUERY = gql`
-   query FindUserQuery($userId: ID) {
-     User(id: $userId) {
+  query FindUserQuery($userId: ID) {
+    User(id: $userId) {
       id
       name
       email
       createdAt
-      updatedAt
-      about
-      education
-      position
-      offers{
-        id
-        amount
-        createdAt
-        updatedAt
-      }
       links{
         id
         title
         offers{
           id
           amount
-          createdAt
-          updatedAt
-          offerdescription
-          offerBy{
-            id
-            name
-          }
           comments{
             id
             content
-            createdAt
-            updatedAt
-            author{
-              id
-              name
-            }
           }
         }
         votes{
@@ -285,16 +313,14 @@ const FIND_USER_QUERY = gql`
   }
 `
 
-
 const UPDATE_USER_MUTATION = gql`
-mutation updateUserMutation ($userId:ID! , $newName:String , $newPosition:String , $newEmail:String ,$newAbout:String , $newEducation:String){
-    updateUser(id: $userId , name:$newName , position: $newPosition, email:$newEmail , about:$newAbout,education:$newEducation) {
+mutation updateUserMutation ($userId:ID! , $newName:String! , $newEmail:String! ,$newAbout:String! , $newEducation:String!){
+    updateUser(id: $userId , name:$newName , email:$newEmail , about:$newAbout,education:$newEducation) {
       id
       name
       email
       about
       education
-      position
       updatedAt
       createdAt
       links{
@@ -392,11 +418,12 @@ const ALL_USERS_QUERY = gql`
 `
 //how to make single queries work
 //export default graphql(USER_QUERY,{name:'findUserQuery'}) (Profile)
+
 export default compose(
   graphql(ALL_USERS_QUERY, {name:'allUsersQuery'}),
-  graphql(FIND_USER_QUERY, { name: 'findUserQuery' , options: (props) =>({variables:{userId: props.match.params.id}})} ),
-
-  graphql(UPDATE_USER_MUTATION, { name: 'updateUserMutation' }),
+  graphql(FIND_USER_QUERY, { name: 'findUserQuery', options: (props) =>({variables:{userId: this.props.match.id}})
+      }),
+  graphql(UPDATE_USER_MUTATION, { name: 'updateUserMutation' })
 )(Profile)
 
 
@@ -438,3 +465,4 @@ export default compose(
 // this.setState({newEmail: user.email})
 // console.log("END MOUNT")
 // }
+Profi

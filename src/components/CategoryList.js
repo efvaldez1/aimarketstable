@@ -4,19 +4,14 @@ import gql from 'graphql-tag'
 
 
 //Material UI
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+//import SelectField from 'material-ui/SelectField';
+//import MenuItem from 'material-ui/MenuItem';
 
 
 class CategoryList extends Component {
-
-
   handleChange = (event, index, category) => {
-
   this.setState({category:category.name});
-  console.log("event")
-  console.log(event.target)
-  console.log(this.state.category)
+
   }
   render(){
 
@@ -26,22 +21,28 @@ class CategoryList extends Component {
 
     if (this.props.allCategoryQuery && this.props.allCategoryQuery.error) {
       return <div>Error</div>
-      {categoryToRender.map((category)=>
-      (console.log(category.id)))
-      }
+
     }
 
     const categoryToRender = this.props.allCategoryQuery.allCategories
-    console.log(categoryToRender)
+    
     return (
       <div>
-      <select name={this.props.name}>
-      {categoryToRender.map((category)=>
-      (<option key={category.id} value={category.name}>
-      {category.name}
-      </option>))
-      }
-      </select>
+
+    <select name={this.props.name} onChange={this.props.onChange}>
+    {categoryToRender.map((category)=>
+        (
+          <option key={category.id} value={category.name}>
+          {category.name}
+          </option>
+        )
+      )
+    }
+    </select>
+
+
+
+
       </div>
     )
   }
@@ -60,12 +61,13 @@ query AllCategoryQuery{
 export default graphql(ALL_CATEGORY_QUERY,{name:'allCategoryQuery'}) (CategoryList)
 
 
-
-
-//<SelectField name={this.props.name}
-//floatingLabelText="Choose Category"
-//>
-//{categoryToRender.map((category)=>
-//(<MenuItem id={category.id} value={category.name} primaryText={category.name} />))
-//}
-//</SelectField>
+    //
+    //
+    // <SelectField name={this.props.name}
+    // floatingLabelText="Choose Category"
+    // onChange={this.props.onChange}
+    // >
+    // {categoryToRender.map((category,id)=>
+    // (<MenuItem key={category.id} label={category.name} value={category.id}  primaryText={category.name}></MenuItem>))
+    // }
+    // </SelectField>

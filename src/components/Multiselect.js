@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { graphql } from 'react-apollo'
 import Select from 'react-select'
 import gql from 'graphql-tag'
@@ -24,15 +24,13 @@ render(){
 
   //console.log(test)
   const options=[]
-  const option={
-    value:'',
-    label:''
-  }
 
   tagToRender.map((tag,id)=>
     {
       options.push({'value':tag.id,'label':tag.name})
+      
     }
+
   )
 
   console.log(options)

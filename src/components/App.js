@@ -8,6 +8,7 @@ import CreateCategory from './CreateCategory'
 import CategoryList from './CategoryList'
 import CreateTag from './CreateTag'
 import Profile from './Profile'
+import SubmissionPage from './SubmissionPage'
 import ProductPage from './ProductPage'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import 'react-select/dist/react-select.css';
@@ -34,6 +35,7 @@ class App extends Component {
             <Route exact path='/categorylist' component={CategoryList} />
             <Route exact path='/new/:page' component={LinkList} />
             <Route exact path='/profile/:id' component={Profile} />
+            <Route exact path='/submissionpage/:id' component={SubmissionPage} />
           </Switch>
         </div>
       </div>

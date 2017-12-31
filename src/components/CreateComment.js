@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
 import { GC_USER_ID } from '../constants'
-import { withRouter } from 'react-router'
-import { Link } from 'react-router-dom'
+// import { withRouter } from 'react-router'
+// import { Link } from 'react-router-dom'
 
 
 // Material UI
@@ -43,7 +43,7 @@ class CreateComment extends Component {
     console.log(this.props)
     return (
       <div>
-        <div className='flex flex-column mt3'>
+        <div>
 
           <TextField
             hintText="Enter Comment"
@@ -86,11 +86,6 @@ class CreateComment extends Component {
 
   this.setState({open: true,})
 
-  //console.log('productId')
-  //const url='/product/'+this.props.productId
-  //const newurl="`"+url+"`"
-  //console.log(this.props)
-  //this.props.history.push(`/top`)
 }
 
 

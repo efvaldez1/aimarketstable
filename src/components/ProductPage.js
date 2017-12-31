@@ -11,24 +11,18 @@ import CreateOffer from './CreateOffer'
 // Material UI
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+
 import FlatButton from 'material-ui/FlatButton';
-import IconButton from 'material-ui/IconButton';
+//import IconButton from 'material-ui/IconButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import Img from 'react-image'
+//import Img from 'react-image'
 //React-PDF
-import { Document, Page } from 'react-pdf';
+//import { Document, Page } from 'react-pdf';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
-
+//import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import Divider from 'material-ui/Divider';
 class ProductPage extends Component {
   componentDidMount() {
     this._subscribeToNewOffers()
@@ -56,7 +50,7 @@ class ProductPage extends Component {
 
 
   render() {
-    const userId = localStorage.getItem(GC_USER_ID)
+
     const actions = [
       <FlatButton
         label="Cancel"
@@ -70,47 +64,29 @@ class ProductPage extends Component {
       />,
     ]
 
-    if (this.props.allLinksQuery && this.props.allLinksQuery.loading) {
+
+    if (this.props.findLinkQuery && this.props.findLinkQuery.loading) {
       return <div><CircularProgress size={90} thickness={7}/></div>
     }
 
-    if (this.props.allLinksQuery && this.props.allLinksQuery.error) {
-      console.log(this.props.allLinksQuery.error)
+    if (this.props.findLinkQuery && this.props.findLinkQuery.error) {
+      console.log(this.props.findLinkQuery.error)
       return <div>Error</div>
     }
-    const id = this.props.match.params.id
-    console.log(id)
-    const result = this.props.allLinksQuery.allLinks
-    console.log(result)
-    var link ={}
-    const len = result.length;
-    for (var i = 0; i < len; i++) {
-      if(result[i].id===id)
-      {
-        link=result[i]
-      }
-    }
-    console.log("found")
-    console.log(link)
-    this.link=link
-    console.log("this")
-    console.log(this.link)
-  //  const product = this.props.findLinkQuery.findLink({
-  //    variables: {
-  //    Id
-  //  }
-  //})
-    //console.log(product)
+    //const id = this.props.match.params.id
+    const link = this.props.findLinkQuery.Link
+    const userId = localStorage.getItem(GC_USER_ID)
     let  EditButton=null
     if(link.postedBy.id===userId) {
         EditButton = <RaisedButton primary={true} label="Edit Submission" onClick={this.handleOpen} />
     }
+
     return (
       <div>
       <Card>
         <CardHeader
           title={link.postedBy.name ?link.postedBy.name : 'Unknown'}
-          subtitle="Position Or Company"
+          subtitle={link.postedBy.position? link.postedBy.position:'No Job Description Yet'}
           avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
         />
         <CardMedia
@@ -123,7 +99,7 @@ class ProductPage extends Component {
         <CardText>
           <div>{link.description}</div>
           <br/>
-          <div> <strong> URL: </strong> {link.url}</div>
+          <div> <strong> URL: </strong><a href={link.url}>{link.url}</a></div>
           <div> <strong> Category: </strong> {link.category || 'None'}</div>
           <div> <strong> Submitted On: </strong> {link.createdAt} ({timeDifferenceForDate(link.createdAt)}) </div>
           <div> <strong> Last updated at: </strong> {link.updatedAt} ({timeDifferenceForDate(link.updatedAt)}) </div>
@@ -137,7 +113,6 @@ class ProductPage extends Component {
           <div className='f6 lh-copy gray'>{link.votes.length} votes </div>
           <div>
           {EditButton}
-
             <Dialog
               title="Edit Submision"
               actions={actions}
@@ -147,7 +122,6 @@ class ProductPage extends Component {
             >
             <div>
             <TextField
-            
               floatingLabelText="Title"
               defaultValue={link.title}
               fullWidth={true}
@@ -162,7 +136,6 @@ class ProductPage extends Component {
               multiLine={true}
               rows={2}
               rowsMax={4}
-
               onChange={(e) => this.setState({ newDescription: e.target.value })}
             />
 
@@ -170,7 +143,6 @@ class ProductPage extends Component {
               floatingLabelText="URL"
               fullWidth={true}
               defaultValue={link.url}
-
               onChange={(e) => this.setState({ newURL: e.target.value })}
             />
             <TextField
@@ -198,39 +170,45 @@ class ProductPage extends Component {
       </Card>
             <div>
             <br/>
-            <label><strong>Offers :</strong></label>
+
             <br/>
             <div>
               {userId &&
-                <div>
+                <Card>
+                <CardText>
                 <CreateOffer linkId={link.id}/>
                 <br/>
-                </div>
+                </CardText>
+                </Card>
               }
               <div>
+              <br/>
+              <label><strong>Offers :</strong></label>
               {link.offers.map((offerItem)=>(
-                <div>
-                <Card key={offerItem.id}>
-                  <CardHeader
+                <div key={offerItem.id}>
 
+                <Card >
+                  <CardHeader
                     title={offerItem.offerBy.name}
                     subtitle="User's Position"
                     avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
                   />
                   <CardText>
+
                       <div>
 
-                      <a>Amount: {offerItem.amount}</a><br/>
+                      <div>Amount: {offerItem.amount} hey</div>
                       <a>Description: {offerItem.offerdescription}</a><br/>
 
                       <div className='f6 lh-copy gray'>
                         <a><strong> Created: </strong>{timeDifferenceForDate(offerItem.createdAt)} </a><br/>
                       </div>
-
+                      <Divider />
                       <label><strong>Comments : </strong></label>
                       {offerItem.comments.map((commentItem)=>
                         (
-                          <Card key={commentItem.id}>
+                          <div key={commentItem.id}>
+                          <Card >
                             <CardHeader
                               title={commentItem.author.name}
                               subtitle="User's Position"
@@ -247,8 +225,8 @@ class ProductPage extends Component {
                                 <br/>
                                 </div>
                             </CardText>
-
                           </Card>
+                          </div>
                         )
                       )
                       }
@@ -267,7 +245,6 @@ class ProductPage extends Component {
               }
 
               </div>
-
             </div>
             </div>
       </div>
@@ -277,31 +254,31 @@ class ProductPage extends Component {
   }
 
   _updateLink = async() => {
-    console.log('heyy');
-    console.log(this.link)
-    var linkId = this.link.id
+    // study further component Life Cycle for prop changes
+
+    var linkId = this.props.findLinkQuery.Link.id
     var newTitle = ''
     var newDescription = ''
     var newURL = ''
     var newCategory = ''
 
     if(this.state.newTitle===''){
-      newTitle=this.link.title
+      newTitle=this.props.findLinkQuery.Link.title
     }else{
       newTitle=this.state.newTitle
     }
     if(this.state.newDescription===''){
-      newDescription=this.link.description
+      newDescription=this.props.findLinkQuery.Link.description
     }else{
       newDescription=this.state.newDescription
     }
     if(this.state.newURL===''){
-      newURL=this.link.url
+      newURL=this.props.findLinkQuery.Link.url
     }else{
       newURL= this.state.newURL
     }
     if(this.state.newCategory===''){
-      newCategory=this.link.category
+      newCategory=this.props.findLinkQuery.Link.category
     }else{
       newCategory=this.state.newCategory
     }
@@ -434,20 +411,17 @@ class ProductPage extends Component {
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-        console.log("update offers")
-        console.log(subscriptionData.data.Offer.node)
+
         const offeredLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Offer.node.link.id)
         const link = subscriptionData.data.Offer.node.link
-        console.log('link1')
-        console.log(link)
+
         const newAllLinks = previous.allLinks.slice()
         newAllLinks[offeredLinkIndex] = link
         const result = {
           ...previous,
           allLinks: newAllLinks
         }
-        console.log("offer subscription")
-        console.log(result)
+
         return result
       }
     })
@@ -533,22 +507,15 @@ class ProductPage extends Component {
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-        console.log("update comments")
-        console.log(subscriptionData.data.Comment.node)
-        console.log(subscriptionData.data.Comment.node.offer)
-        console.log(subscriptionData.data.Comment.node.offer.link)
         const commentedLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Comment.node.offer.link.id)
         const link = subscriptionData.data.Comment.node.offer.link
-        console.log("linkx")
-        console.log(link)
         const newAllLinks = previous.allLinks.slice()
         newAllLinks[commentedLinkIndex] = link
         const result = {
           ...previous,
           allLinks: newAllLinks
         }
-        console.log("comment subscription")
-        console.log(result)
+
         return result
       }
     })
@@ -556,17 +523,53 @@ class ProductPage extends Component {
   }
 
 }
-console.log(this.props)
-//const Id = this.props.match.params.id
-//const FIND_LINK_QUERY = gql`
-//query findLink($id: ID!){
-//  Link(id: $id){
-//    title
-//    category
-//    description
-//  }
-//}
-//`
+
+const FIND_LINK_QUERY = gql`
+query FindLink($id: ID!){
+  Link(id: $id){
+    id
+    title
+    category
+    description
+    url
+    createdAt
+    updatedAt
+    category
+    votes{
+      id
+    }
+    tags{
+      id
+      name
+    }
+    postedBy{
+      id
+      name
+    }
+    offers{
+      id
+      amount
+      offerdescription
+      offerBy{
+        id
+        name
+      }
+      createdAt
+      updatedAt
+      comments{
+        id
+        content
+        author{
+          id
+          name
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+`
 
 const UPDATE_LINK_MUTATION = gql`
 mutation updateLinkMutation($linkId:ID! , $newTitle:String! , $newDescription:String! , $newURL: String! , $newCategory:String!){
@@ -644,6 +647,8 @@ const ALL_LINKS_QUERY = gql`
   }
 `
 
+
+
 const CREATE_VOTE_MUTATION = gql`
   mutation CreateVoteMutation($userId: ID!, $linkId: ID!) {
     createVote(userId: $userId, linkId: $linkId) {
@@ -666,6 +671,7 @@ const CREATE_VOTE_MUTATION = gql`
 export default compose(
   graphql(ALL_LINKS_QUERY, {name: 'allLinksQuery'}),
   graphql(CREATE_VOTE_MUTATION, {name: 'createVoteMutation'}),
-  graphql(UPDATE_LINK_MUTATION, {name: 'updateLinkMutation'})
-  //graphql(FIND_LINK_QUERY, {name: 'findLinkQuery'})
+  graphql(UPDATE_LINK_MUTATION, {name: 'updateLinkMutation'}),
+  graphql(FIND_LINK_QUERY, {name:'findLinkQuery' , options: (props) =>({variables:{id: props.match.params.id}})})
+
 ) (ProductPage)

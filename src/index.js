@@ -13,7 +13,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 
-const serviceId = process.env.SERVICE_ID || 'cjbgirjg00i1r0114jgukrso5';
+const serviceId = process.env.SERVICE_ID || 'cjbs6gk3o1osu0185427893lv';
 
 const httpLink = new HttpLink({ uri: `https://api.graph.cool/simple/v1/${serviceId}` })
 

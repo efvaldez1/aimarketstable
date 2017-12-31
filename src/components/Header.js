@@ -9,20 +9,23 @@ import { GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/FlatButton';
-import Toggle from 'material-ui/Toggle';
+//import FlatButton from 'material-ui/FlatButton';
+//import Toggle from 'material-ui/Toggle';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import BalanceIcon from 'material-ui/svg-icons/action/account-balance';
+//import NavigationClose from 'material-ui/svg-icons/navigation/close';
+//import BalanceIcon from 'material-ui/svg-icons/action/account-balance';
 
 import AppBar from 'material-ui/AppBar';
+import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 class Header extends Component {
   render() {
     const userId = localStorage.getItem(GC_USER_ID)
     const PageMenu = (
         <IconMenu
           iconButtonElement={
-            <IconButton><MoreVertIcon /></IconButton>
+            <IconButton touch={true}>
+                <NavigationExpandMoreIcon />
+              </IconButton>
           }
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -30,6 +33,7 @@ class Header extends Component {
           {<Link to='/'><MenuItem > new </MenuItem></Link>}
           {<Link to='/top'><MenuItem > top </MenuItem></Link>}
           {<Link to='/search'><MenuItem> search </MenuItem></Link>}
+
           {userId &&
           <div>
           <Link to='/createcategory'><MenuItem> create category </MenuItem></Link>
@@ -52,7 +56,7 @@ class Header extends Component {
         {userId &&
         <div>
         {<Link to={'/profile/'+userId} ><MenuItem primaryText="Profile"></MenuItem></Link>}
-        {<MenuItem primaryText="Settings (NOT YET IMPLEMENTED)" ></MenuItem>}
+        {<Link to={'/submissionpage/'+userId} ><MenuItem primaryText="My Submissions"></MenuItem></Link>}
         </div>
         }
 

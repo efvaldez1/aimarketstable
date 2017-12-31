@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 import { GC_USER_ID, LINKS_PER_PAGE } from '../constants'
 import { ALL_LINKS_QUERY } from './LinkList'
 import CategoryList from './CategoryList'
-import Select from 'react-select'
+//import Select from 'react-select'
 //import Multiselect from './Multiselect'
 
 
@@ -18,41 +18,23 @@ const style = {
   margin: 12,
 };
 
-const names = [
-'Oliver Hansen',
-'Van Henry',
-'April Tucker',
-'Ralph Hubbard',
-'Omar Alexander',
-'Carlos Abbott',
-'Miriam Wagner',
-'Bradley Wilkerson',
-'Virginia Andrews',
-'Kelly Snyder',
-];
-
+// learn how to get of index from an array of objects
+//https://stackoverflow.com/questions/35823783/finding-the-array-index-of-an-object-with-javascript-react-js
 class CreateLink extends Component {
   constructor() {
     super();
     this.handleSelect = this.handleSelect.bind(this);
+
     this.handleMultiSelect = this.handleMultiSelect.bind(this);
   }
 
   handleSelect(event){
-
     console.log(event.target.value)
     this.setState({ category: event.target.value})
   }
   handleMultiSelect = (tag) => {
     this.setState({tag })
-    var temp = tag.slice()
-    var tempoptions=[]
-    temp.map((item,id)=>
-    {tempoptions.push({'id':item.value,'name':item.name})}
-    )
 
-    console.log('multi')
-    console.log(tag)
 
   }
 
@@ -62,28 +44,21 @@ class CreateLink extends Component {
     url: '',
     category:'Publication',        // how to change to first element of API call
     tag:'',
-    tagsTemp:''
+    tagsTemp:'',
+    values:[]
   }
 
-  handleSelect = (event, index, category) => {
+  selectCategory(selectedValue){
+    console.log('test')
+    this.setState({ category: selectedValue.target.value })
 
-  this.setState({category});
-  console.log("event")
-  console.log(event.target)
-  console.log(this.state.category)
   }
+  handleSelect = (event) => {
+    this.setState({category:event.target.value})
+  }
+
   handleChange = (event, index, values) => this.setState({values});
-  menuItems(values) {
-    return names.map((name) => (
-      <MenuItem
-        key={name}
-        insetChildren={true}
-        checked={values && values.indexOf(name) > -1}
-        value={name}
-        primaryText={name}
-      />
-    ));
-  }
+
 
   render() {
     if (this.props.allTagQuery && this.props.allTagQuery.loading) {
@@ -95,30 +70,23 @@ class CreateLink extends Component {
       return <div>Error</div>
     }
     const tagToRender = this.props.allTagQuery.allTags
-    const options=[]
-    const names=[]
-    tagToRender.map((tag,id)=>
-    {
-      options.push(tag.name)
-      options.push({'value':tag.id,'label':tag.name})
-    }
-    )
-    const combolist = [{id:1,name:'publication'},{id:2,name:'software'}]
     const {values} = this.state;
-
-
+    console.log('values')
+    console.log(values)
 
 
     return (
       <div >
         <div className='flex flex-column mt3'>
         <TextField
+          key="title"
           hintText="Enter Title"
           value={this.state.title}
           onChange={(e) => this.setState({ title: e.target.value })}
         /><br />
 
         <TextField
+          key="description"
           hintText="Enter Description"
           multiLine={true}
           rows={1}
@@ -128,22 +96,36 @@ class CreateLink extends Component {
         /><br />
 
         <TextField
+          key="url"
           hintText="Enter URL"
           value={this.state.url}
           onChange={(e) => this.setState({ url: e.target.value })}
         /><br />
-        <label> Category : </label>
-        <div onChange={this.handleSelect}>
-        <CategoryList  />
-        </div>
 
-          <label>Tags :</label>
-          <Select
-            onChange={this.handleMultiSelect}
-            value={this.state.tag}
-            multi={true}
-        		options={options}
-          />
+        <label> Category : </label>
+
+        <CategoryList ref="categorySelector" name="myCategoryList" onChange={this.selectCategory.bind(this)} />
+        <br/>
+        <SelectField
+        multiple={true}
+        hintText="Select Tag/s"
+        value={values}
+        onChange={this.handleChange}
+        >
+
+        {tagToRender.map((tagItem)=>
+          (
+            <MenuItem
+              key={tagItem.id}
+              insetChildren={true}
+              checked={values && values.indexOf(tagItem) > -1}
+              value={tagItem.id}
+              primaryText={tagItem.name}
+            />
+          )
+          )
+        }
+      </SelectField>
         </div>
         <RaisedButton onClick={() => this._createLink ()} label="Submit" primary={true} style={style} />
       </div>
@@ -151,25 +133,21 @@ class CreateLink extends Component {
   }
 
   _createLink = async () => {
-    console.log(this.state.category)
-    console.log(this.state.title)
+    console.log('create link')
 
-    const temp = this.state.tag.slice()
-    const tempoptions=[]
-    temp.map((item)=>
-    {tempoptions.push(item.value)}
-    )
-    //this.setState({this.state.tagsTemp:tempoptions})     //must be {value: "" ,label:" "} for Select widget to not cause Error
-                                                          //must be {id:ID!} to be accepted by graphcool
-    console.log('createLink')
-    console.log(tempoptions)
+    console.log(this.state.title)
+    console.log(this.state.description)
+    console.log(this.state.url)
+    console.log(this.state.category)
+    console.log(this.state.values)
     const postedById = localStorage.getItem(GC_USER_ID)
     if (!postedById) {
       console.error('No user logged in')
       return
     }
 
-    const { title,description, url,category } = this.state
+    const { title,description, url,category,values } = this.state
+    console.log(this.state.values)
       await this.props.createLinkMutation({
         variables: {
         title,
@@ -177,7 +155,7 @@ class CreateLink extends Component {
         url,
         category,
         postedById,
-        tempoptions
+        values
       },
       update: (store, { data: { createLink } }) => {
         const first = LINKS_PER_PAGE
@@ -206,14 +184,14 @@ class CreateLink extends Component {
 
 //export default graphql(ALL_CATEGORY_QUERY,{name:'allCategoryQuery'}) (CategoryList)
 const CREATE_LINK_MUTATION = gql`
-    mutation CreateLinkAnConnectTags($title: String! ,$description: String!, $url: String!, $postedById: ID!, $category:String!,$tags:[ID!]) {
+    mutation CreateLinkAnConnectTags($title: String! ,$description: String!, $url: String!, $postedById: ID!, $category:String!,$values:[ID!]) {
         createLink(
             title: $title,
             description: $description,
             url: $url,
             category:$category,
             postedById: $postedById,
-            tagsIds: $tags
+            tagsIds: $values
         ) {
             id
             title
@@ -222,6 +200,10 @@ const CREATE_LINK_MUTATION = gql`
             url
             description
             category
+            offers{
+              id
+              amount
+            }
             postedBy {
                 id
                 name

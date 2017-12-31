@@ -44,15 +44,16 @@ type User @model {
   id: ID! @isUnique
   createdAt: DateTime!
   updatedAt: DateTime!
-  position: String!
-  about: String!
-  linkedin: String!
-  twitter: String!
-  medium: String!
-  github: String!
+  position: String
+  about: String
+  linkedin: String
+  twitter: String
+  medium: String
+  github: String
+  education: String
   name: String!
 
-  email: String @isUnique
+  email: String! @isUnique
   password: String
   offers: [Offer!]! @relation(name: "UserOffers")
   links: [Link!]! @relation(name: "UsersLinks")
@@ -70,5 +71,5 @@ type Vote @model {
 type Category @model {
   id: ID! @isUnique
   name: String!
-  
+
 }
