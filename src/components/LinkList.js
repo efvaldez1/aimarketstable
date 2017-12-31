@@ -119,6 +119,7 @@ class LinkList extends Component {
                   offerBy{
                     id
                     name
+                    position
                   }
                 }
                 votes {
@@ -186,6 +187,7 @@ class LinkList extends Component {
                 offerBy{
                   id
                   name
+                  position
                 }
               }
               votes {
@@ -351,6 +353,7 @@ export const ALL_LINKS_QUERY = gql`
       postedBy {
         id
         name
+        position
       }
       votes {
         id
@@ -365,6 +368,7 @@ export const ALL_LINKS_QUERY = gql`
         offerBy{
           id
           name
+          position
         }
       }
       tags{
