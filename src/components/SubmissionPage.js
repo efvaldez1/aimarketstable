@@ -36,7 +36,6 @@ const styles = {
 class SubmissionPage extends Component {
 
   state = {
-
     userId:'',
     newTitle:'',
     newDescription:'',
@@ -56,7 +55,10 @@ class SubmissionPage extends Component {
     this.setState({link:linkId})
     this.setState({open: true});
   };
+  handleCloseConfirm = () => {
 
+    this.setState({open: false});
+  };
   handleClose = (linkId) => {
 
     this.setState({open: false});
@@ -124,6 +126,7 @@ class SubmissionPage extends Component {
         label="Delete"
         primary={true}
 
+
       />,
     ];
     const actions = [
@@ -138,6 +141,7 @@ class SubmissionPage extends Component {
           onClick={() => this._updateLink()}
         />,
       ]
+
       return (
         <div>
 
@@ -180,7 +184,10 @@ class SubmissionPage extends Component {
               <CardActions>
               { canSelect &&
                 <div>
-                <RaisedButton primary={false} label="Delete " />
+                <RaisedButton primary={false} label="Delete " onClick={() => {
+                    this.handleConfirm()
+
+                }} />
                 </div>
               }
               <Dialog
@@ -225,8 +232,19 @@ class SubmissionPage extends Component {
               </Dialog>
 
               <Dialog
-                actions={actionsConfirm}
-                modal={false}
+                actions={[
+                  <FlatButton
+                    label="Cancel"
+                    primary={false}
+                    onClick={this.handleCloseConfirm}
+                  />,
+                  <FlatButton
+                    label="Delete"
+                    primary={true}
+                    onClick = {() => this._deleteSubmissions(link.id)}
+                  />,
+                ]}
+                modal={true}
                 open={this.state.openConfirm}
                 onRequestClose={this.confirmClose}
               >
@@ -247,21 +265,21 @@ class SubmissionPage extends Component {
       )
   }
 
-  _deleteSubmissions  = async(linkId)=> {
-
-    console.log("del submission")
+  _deleteSubmissions = async(linkId) => {
+    // study further component Life Cycle for prop changes
+    console.log('del')
     console.log(linkId)
-    //const{linkId} = this.state.link
-    const link = linkId
+
+    const link= linkId
+    console.log(link)
     await this.props.deleteLinkMutation({
       variables: {
         link
       }
-    })
-    console.log('done')
-    console.log(this.state.link)
+    }
+  )
+    this.setState({openConfirm: false,})
   }
-
   _updateLink = async(linkId) => {
     // study further component Life Cycle for prop changes
     console.log('updateLink');
@@ -385,8 +403,8 @@ mutation UpdateLinkQuery($id:ID! $newTitle:String! $newDescription:String! $newU
 }
 `
 const DELETE_LINK_MUTATION = gql`
-mutation deleteLinkMutation ($linkId: ID!){
-  deleteLink(id:$linkId){
+mutation deleteLinkMutation ($link: ID!){
+  deleteLink(id:$link){
     id
     title
   }
