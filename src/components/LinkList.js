@@ -6,7 +6,9 @@ import { LINKS_PER_PAGE } from '../constants'
 
 
 //Material UI
-import CircularProgress from 'material-ui/CircularProgress';
+// import CircularProgress from 'material-ui/CircularProgress';
+// v 1.0
+import { CircularProgress } from 'material-ui-next/Progress';
 class LinkList extends Component {
 
   componentDidMount() {

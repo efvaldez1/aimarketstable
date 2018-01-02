@@ -4,18 +4,25 @@ import { timeDifferenceForDate } from '../utils'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Link } from 'react-router-dom'
-
-
 //material ui
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card'
+//import {Card, CardActions, CardHeader, CardContent} from 'material-ui/Card'
+import Card, { CardHeader,CardActions, CardContent } from 'material-ui-next/Card';
 import Avatar from 'material-ui/Avatar';
 
-import FlatButton from 'material-ui/FlatButton';
+// import Button from 'material-ui/Button';
+//v 1.0
+import Button from 'material-ui-next/Button';
 //import IconButton from 'material-ui/IconButton';
 //import Img from 'react-image'
 import Snackbar from 'material-ui/Snackbar';
 import Chip from 'material-ui/Chip';
+import ThumbUp from 'material-ui-icons/ThumbUp';
 
+import PropTypes from 'prop-types';
+import {withStyles } from 'material-ui/styles';
+import MoreVertIcon from 'material-ui-icons/MoreVert';
+import IconButton from 'material-ui/IconButton';
+import Typography from 'material-ui-next/Typography';
 const styles = {
   chip: {
     margin: 4,
@@ -25,6 +32,18 @@ const styles = {
     flexWrap: 'wrap',
   },
 }
+
+const styles2 = theme => ({
+  button: {
+    margin: theme.spacing.unit,
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
+});
 
 
 class Product extends Component {
@@ -53,50 +72,55 @@ handleRequestClose = () => {
     return (
       <div>
       <Card>
-        <CardHeader
-          title={<Link to={'/profile/'+this.props.link.postedBy.id} > {this.props.link.postedBy.name ? this.props.link.postedBy.name : 'Unknown'}</Link>}
-
-          subtitle={this.props.link.postedBy.position ? this.props.link.postedBy.position : "No job description yet"}
-          avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
-        />
-        <CardText>
-
-        <div><strong>Title: </strong> <Link to={'/product/'+this.props.link.id} > {this.props.link.title}</Link></div>
-        <div><strong> Description:</strong> {this.props.link.description} </div>
-        <div> <strong> URL: </strong> <a href={this.props.link.url}>{this.props.link.url}</a></div>
-        <div> <strong> Category: </strong> {this.props.link.category}  </div>
-        <div> <strong> No. of Tags: </strong> {this.props.link.tags.length||"None"}  </div>
-        <div style={styles.wrapper}>
-
-          {this.props.link.tags.map((tagItem)=>
-              (
-                <Chip key = {tagItem.id}
-                  style={styles.chip}
-                >
-                  {tagItem.name}
-                </Chip>
-
-              )
-            )
+      <CardHeader
+        title={<Link to={'/profile/'+this.props.link.postedBy.id} > {this.props.link.postedBy.name ? this.props.link.postedBy.name : 'Unknown'}</Link>}
+        action={
+            <IconButton>
+              <MoreVertIcon />
+            </IconButton>
           }
-        </div>
+        subheader={this.props.link.postedBy.position ? this.props.link.postedBy.position : "No job description yet"}
+        avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
+      >
+      </CardHeader>
+      <CardContent>
 
-        <div><strong> Submited On:</strong> {this.props.link.createdAt} ({timeDifferenceForDate(this.props.link.createdAt)})</div>
-        <div><strong> Last Updated:</strong> ({timeDifferenceForDate(this.props.link.updatedAt)})</div>
-        <br/>
-        <div className='flex items-center'>
-             {userId && <div className='ml1 gray f11' onClick={() => this._voteForLink()}>Vote ▲ </div>}
-        </div>
-        <br/>
-        <div className='f6 lh-copy gray'>  {this.props.link.votes.length} votes </div>
-        </CardText>
+      <div><strong>Title: </strong> <Link to={'/product/'+this.props.link.id} > {this.props.link.title}</Link></div>
+      <div><strong> Description:</strong> {this.props.link.description} </div>
+      <div> <strong> URL: </strong> <a href={this.props.link.url}>{this.props.link.url}</a></div>
+      <div> <strong> Category: </strong> {this.props.link.category}  </div>
+      <div> <strong> No. of Tags: </strong> {this.props.link.tags.length||"None"}  </div>
+      <div style={styles.wrapper}>
+
+        {this.props.link.tags.map((tagItem)=>
+            (
+              <Chip key = {tagItem.id}
+                style={styles.chip}
+              >
+                {tagItem.name}
+              </Chip>
+
+            )
+          )
+        }
+      </div>
+
+      <div><strong> Submited On:</strong> {this.props.link.createdAt} ({timeDifferenceForDate(this.props.link.createdAt)})</div>
+      <div><strong> Last Updated:</strong> ({timeDifferenceForDate(this.props.link.updatedAt)})</div>
+      <br/>
+      <div className='flex items-center'>
+           {userId && <div className='ml1 gray f11' onClick={() => this._voteForLink()}>Vote <IconButton aria-label="Delete">
+      <ThumbUp />
+    </IconButton> </div>}
+      </div>
+      <br/>
+      <div className='f6 lh-copy gray'>  {this.props.link.votes.length} votes </div>
+      </CardContent>
         <CardActions>
-          <label> Share On: (Not yet implemented) </label>
-          <FlatButton label="LinkedIn" />
-          <FlatButton label="Facebook" />
-          <FlatButton label="Twitter" />
+          <Button dense>Learn More</Button>
         </CardActions>
       </Card>
+
       <Snackbar
           open={this.state.open}
           message="You have voted for this!"
@@ -150,17 +174,20 @@ const CREATE_VOTE_MUTATION = gql`
   }
 `
 
+// Product.propTypes = {
+//   classes: PropTypes.object.isRequired,
+// };
 export default graphql(CREATE_VOTE_MUTATION, {
   name: 'createVoteMutation'
 })(Product)
 
 // const actions = [
-//   <FlatButton
+//   <Button
 //     label="Cancel"
 //     primary={false}
 //     onClick={this.handleClose}
 //   />,
-//   <FlatButton
+//   <Button
 //     label="Submit"
 //     primary={true}
 //     onClick={() => this._updateLink()}

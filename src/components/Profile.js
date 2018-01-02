@@ -10,12 +10,15 @@ import gql from 'graphql-tag'
 // Material UI
 import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar';
-
-import FlatButton from 'material-ui/FlatButton';
 //import IconButton from 'material-ui/IconButton';
 //import Img from 'react-image';
-import CircularProgress from 'material-ui/CircularProgress';
-import RaisedButton from 'material-ui/RaisedButton';
+// import CircularProgress from 'material-ui/CircularProgress';
+// v 1.0
+import { CircularProgress } from 'material-ui-next/Progress';
+// import Button from 'material-ui/Button';
+// import Button raised from 'material-ui/Button raised';
+// v 1.0
+import Button from 'material-ui-next/Button';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import {Tabs, Tab} from 'material-ui/Tabs';
@@ -89,12 +92,12 @@ class Profile extends Component {
     }
 
     const actions = [
-        <FlatButton
+        <Button
           label="Cancel"
           primary={false}
           onClick={this.handleClose}
         />,
-        <FlatButton
+        <Button
           label="Submit"
           primary={true}
           onClick={() => this._updateUser()}
@@ -121,7 +124,7 @@ class Profile extends Component {
                 <div>Education : {user.education|| "N/A"}</div>
                 <div> No.Of Products Submitted : {user.links.length||"N/A"} </div>
                 <div> No. Of Offers Created : {user.offers.length||"N/A"} </div>
-                <RaisedButton primary={true} label="Edit Profile" onClick={this.handleOpen} />
+                <Button raised primary={true} label="Edit Profile" onClick={this.handleOpen} />
 
                 <Dialog
                   title="Edit Submision"
@@ -172,10 +175,10 @@ class Profile extends Component {
               </CardText>
               <CardActions>
                 <label> Follow On: </label>
-                <a href="https://www.graph.cool/docs/reference/graphql-api/mutation-api-ol0yuoz6go/#updating-a-node"><FlatButton label="LinkedIn"> </FlatButton></a>
-                <a> <FlatButton label="Medium" /> </a>
-                <a> <FlatButton label="Twitter" /> </a>
-                <a> <FlatButton label="Github" /> </a>
+                <a href="https://www.graph.cool/docs/reference/graphql-api/mutation-api-ol0yuoz6go/#updating-a-node"><Button label="LinkedIn"> </Button></a>
+                <a> <Button label="Medium" /> </a>
+                <a> <Button label="Twitter" /> </a>
+                <a> <Button label="Github" /> </a>
               </CardActions>
             </Card>
           </div>

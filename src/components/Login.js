@@ -5,8 +5,9 @@ import gql from 'graphql-tag'
 
 //Material UI
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-
+//import Button from 'material-ui/Button';
+// v1.0
+import Button from 'material-ui-next/Button';
 const style = {
   margin: 12,
 };
@@ -48,8 +49,8 @@ class Login extends Component {
           />
         </div>
         <div>
-          <RaisedButton style={style} label={this.state.login ? 'login' : 'create account' } primary={true} onClick={() => this._confirm()} />
-          <RaisedButton style={style} label={this.state.login ? 'need to create an account?' : 'already have an account?'} primary={true} onClick={() => this.setState({ login: !this.state.login })} />
+          <Button raised style={style} color="primary" onClick={() => this._confirm()}> {this.state.login ? 'login' : 'create account' }</Button>
+          <Button raised style={style} color="primary" onClick={() => this.setState({ login: !this.state.login })}> {this.state.login ? 'need to create an account?' : 'already have an account?'} </Button>
         </div>
       </div>
     )

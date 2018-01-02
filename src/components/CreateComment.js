@@ -9,7 +9,9 @@ import { GC_USER_ID } from '../constants'
 // Material UI
 import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+//import Button from 'material-ui/Button';
+//v1
+import Button from 'material-ui-next/Button';
 //<TextField
 //  hintText="Enter Amount"
 //  value={this.state.amount}
@@ -55,8 +57,10 @@ class CreateComment extends Component {
           />
 
         </div>
+        <div>
+          <Button raised color='primary'  onClick={() => this._createComment()}> Submit Comment  </Button>
+        </div>
 
-        <RaisedButton primary={true} label="Submit Comment" onClick={() => this._createComment()}/>
         <Snackbar
           open={this.state.open}
           message="Submitted your comment!"

@@ -9,12 +9,15 @@ import { Link } from 'react-router-dom'
 // Material UI
 import {Card, CardActions, CardText} from 'material-ui/Card'
 //import Avatar from 'material-ui/Avatar';
-
-import FlatButton from 'material-ui/FlatButton';
 //import IconButton from 'material-ui/IconButton';
 //import Img from 'react-image';
-import CircularProgress from 'material-ui/CircularProgress';
-import RaisedButton from 'material-ui/RaisedButton';
+// import CircularProgress from 'material-ui/CircularProgress';
+// v 1.0
+import { CircularProgress } from 'material-ui-next/Progress';
+// import Button from 'material-ui/Button';
+// import Button raised from 'material-ui/Button raised';
+//v 1.0
+import Button from 'material-ui-next/Button';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import {Tabs, Tab} from 'material-ui/Tabs';
@@ -117,12 +120,12 @@ class SubmissionPage extends Component {
     }
     console.log(canSelect)
     const actionsConfirm = [
-      <FlatButton
+      <Button
         label="Cancel"
         primary={false}
         onClick={this.handleCloseConfirm}
       />,
-      <FlatButton
+      <Button
         label="Delete"
         primary={true}
 
@@ -130,12 +133,12 @@ class SubmissionPage extends Component {
       />,
     ];
     const actions = [
-        <FlatButton
+        <Button
           label="Cancel"
           primary={false}
           onClick={this.handleClose}
         />,
-        <FlatButton
+        <Button
           label="Submit"
           primary={true}
           onClick={() => this._updateLink()}
@@ -177,14 +180,14 @@ class SubmissionPage extends Component {
               <br/>
               <div className='f6 lh-copy gray'>  {link.votes.length} votes </div>
               <label> Share On: (Not yet implemented) </label>
-              <FlatButton label="LinkedIn" />
-              <FlatButton label="Facebook" />
-              <FlatButton label="Twitter" />
+              <Button label="LinkedIn" />
+              <Button label="Facebook" />
+              <Button label="Twitter" />
               </CardText>
               <CardActions>
               { canSelect &&
                 <div>
-                <RaisedButton primary={false} label="Delete " onClick={() => {
+                <Button raised primary={false} label="Delete " onClick={() => {
                     this.handleConfirm()
 
                 }} />
@@ -233,12 +236,12 @@ class SubmissionPage extends Component {
 
               <Dialog
                 actions={[
-                  <FlatButton
+                  <Button
                     label="Cancel"
                     primary={false}
                     onClick={this.handleCloseConfirm}
                   />,
-                  <FlatButton
+                  <Button
                     label="Delete"
                     primary={true}
                     onClick = {() => this._deleteSubmissions(link.id)}

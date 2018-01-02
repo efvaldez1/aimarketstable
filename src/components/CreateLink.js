@@ -10,10 +10,16 @@ import CategoryList from './CategoryList'
 
 //Material UI
 import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
+//import Select from 'material-ui/Select';
+//import MenuItem from 'material-ui/MenuItem';
+//v 1.0
+import Select from 'material-ui-next/Select';
+import { MenuItem } from 'material-ui/Menu';
+import Button from 'material-ui-next/Button';
+// import CircularProgress from 'material-ui/CircularProgress';
+// v 1.0
+import { CircularProgress } from 'material-ui-next/Progress';
+import Input, { InputLabel } from 'material-ui-next/Input';
 const style = {
   margin: 12,
 };
@@ -32,8 +38,10 @@ class CreateLink extends Component {
     console.log(event.target.value)
     this.setState({ category: event.target.value})
   }
-  handleMultiSelect = (tag) => {
-    this.setState({tag })
+  handleMultiSelect = (event) => {
+    console.log('selected!')
+    console.log(event.target.value)
+    this.setState({values:event.target.value })
 
 
   }
@@ -105,29 +113,30 @@ class CreateLink extends Component {
         <label> Category : </label>
 
         <CategoryList ref="categorySelector" name="myCategoryList" onChange={this.selectCategory.bind(this)} />
-        <br/>
-        <SelectField
-        multiple={true}
-        hintText="Select Tag/s"
-        value={values}
-        onChange={this.handleChange}
-        >
 
-        {tagToRender.map((tagItem)=>
-          (
-            <MenuItem
-              key={tagItem.id}
-              insetChildren={true}
-              checked={values && values.indexOf(tagItem) > -1}
-              value={tagItem.id}
-              primaryText={tagItem.name}
-            />
-          )
-          )
-        }
-      </SelectField>
+
+      <InputLabel htmlFor="name-multiple">Choose Tag/s</InputLabel>
+      <Select
+      multiple
+      value={values}
+      input={<Input id="name-multiple" />}
+      onChange={this.handleMultiSelect}
+      >
+
+      {tagToRender.map((tagItem)=>
+        (
+          <MenuItem
+            key={tagItem.id}
+            value={tagItem.id}
+          >
+            {tagItem.name}
+          </MenuItem>
+        )
+        )
+      }
+    </Select>
         </div>
-        <RaisedButton onClick={() => this._createLink ()} label="Submit" primary={true} style={style} />
+        <Button onClick={() => this._createLink ()} label="Submit" primary={true} style={style} />
       </div>
     )
   }
@@ -236,3 +245,26 @@ export default compose(
   graphql(ALL_TAG_QUERY, {name:'allTagQuery'}),
   graphql(CREATE_LINK_MUTATION, { name: 'createLinkMutation' })
 )(CreateLink)
+
+
+// <br/>
+// <Select
+// multiple={true}
+// hintText="Select Tag/s"
+// value={values}
+// onChange={this.handleChange}
+// >
+//
+// {tagToRender.map((tagItem)=>
+//   (
+//     <MenuItem
+//       key={tagItem.id}
+//       insetChildren={true}
+//       checked={values && values.indexOf(tagItem) > -1}
+//       value={tagItem.id}
+//       primaryText={tagItem.name}
+//     />
+//   )
+//   )
+// }
+// </Select>

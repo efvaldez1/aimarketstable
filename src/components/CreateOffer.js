@@ -6,7 +6,9 @@ import { GC_USER_ID } from '../constants'
 
 //material UI
 import Snackbar from 'material-ui/Snackbar';
-import RaisedButton from 'material-ui/RaisedButton';
+//import Button from 'material-ui/Button';
+// v 1.0
+import Button from 'material-ui-next/Button';
 import TextField from 'material-ui/TextField';
 class CreateOffer extends Component {
 
@@ -56,12 +58,9 @@ class CreateOffer extends Component {
           fullWidth={true}
           onChange={(e) => this.setState({ offerdescription: e.target.value })}
         />
-
-
-
         </div>
 
-        <RaisedButton primary={true} label="Submit Offer" onClick={() => this._createOffer()}/>
+        <Button raised color='primary' onClick={() => this._createOffer()}>Submit Offer</Button>
         <br/>
 
         <Snackbar

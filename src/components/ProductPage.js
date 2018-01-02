@@ -9,20 +9,30 @@ import CreateOffer from './CreateOffer'
 
 
 // Material UI
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card'
+import Card, {CardMedia, CardHeader,CardActions, CardContent } from 'material-ui-next/Card';
 import Avatar from 'material-ui/Avatar';
-
-import FlatButton from 'material-ui/FlatButton';
 //import IconButton from 'material-ui/IconButton';
-import CircularProgress from 'material-ui/CircularProgress';
+// import CircularProgress from 'material-ui/CircularProgress';
+// v 1.0
+import { CircularProgress } from 'material-ui-next/Progress';
 //import Img from 'react-image'
 //React-PDF
 //import { Document, Page } from 'react-pdf';
-import RaisedButton from 'material-ui/RaisedButton';
+// import Button from 'material-ui/Button';
+// import Button raised from 'material-ui/Button raised';
+//v 1.0
+import Button from 'material-ui-next/Button';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 //import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import Divider from 'material-ui/Divider';
+import MoreVertIcon from 'material-ui-icons/MoreVert';
+import IconButton from 'material-ui/IconButton';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import DeleteIcon from 'material-ui-icons/Delete';
+import Chip from 'material-ui/Chip';
+import { Link } from 'react-router-dom';
+import Snackbar from 'material-ui/Snackbar';
 class ProductPage extends Component {
   componentDidMount() {
     this._subscribeToNewOffers()
@@ -38,6 +48,11 @@ class ProductPage extends Component {
     newCategory:'',
     newAuthor:'',
     open: false,
+    openComment:false,
+    openOffer:false,
+    newAmount: '',
+    newOfferDescription: '',
+    newContent: '',
   }
 
   handleOpen = () => {
@@ -52,18 +67,37 @@ class ProductPage extends Component {
   render() {
 
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={false}
+      <Button
+        color='primary'
         onClick={this.handleClose}
-      />,
-      <FlatButton
-        label="Submit"
-        primary={true}
+      >Cancel</Button>,
+      <Button raised
+        color='primary'
         onClick={() => this._updateLink()}
-      />,
+      >Submit</Button>,
     ]
 
+    const editOfferActions = [
+      <Button
+        color='primary'
+        onClick={() => this.setState({openOffer:false})}
+      >Cancel</Button>,
+      <Button raised
+        color='primary'
+        onClick={() => this._updateLink()}
+      >Update Offer</Button>,
+    ]
+
+    const editCommentActions = [
+      <Button
+        color='primary'
+        onClick={() => this.setState({openComment:false})}
+      >Cancel</Button>,
+      <Button raised
+        color='primary'
+        onClick={() => this._updateLink()}
+      >Update Comment</Button>,
+    ]
 
     if (this.props.findLinkQuery && this.props.findLinkQuery.loading) {
       return <div><CircularProgress size={90} thickness={7}/></div>
@@ -77,185 +111,304 @@ class ProductPage extends Component {
     const link = this.props.findLinkQuery.Link
     const userId = localStorage.getItem(GC_USER_ID)
     let  EditButton=null
+    let DeleteOfferButton = null
+    let UpdateOfferButton = null
+    let UpdateCommentButton = null
+    let DeleteCommentButton = null
     if(link.postedBy.id===userId) {
-        EditButton = <RaisedButton primary={true} label="Edit Submission" onClick={this.handleOpen} />
+        EditButton = <Button raised color='primary' onClick={this.handleOpen}> "Edit Submission" </Button>
+        DeleteOfferButton  = <IconButton><DeleteIcon /></IconButton>
+        UpdateOfferButton  = <Button onClick={() => this.setState({openOffer:true}) }> Edit </Button>
+        UpdateCommentButton  = <Button onClick={() => this.setState({openComment:true}) }> Edit </Button>
+        DeleteCommentButton = <IconButton><DeleteIcon /></IconButton>
     }
 
     return (
       <div>
       <Card>
-        <CardHeader
-          title={link.postedBy.name ?link.postedBy.name : 'Unknown'}
-          subtitle={link.postedBy.position? link.postedBy.position:'No Job Description Yet'}
-          avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
-        />
-        <CardMedia
-          overlay={<CardTitle title={link.title} subtitle={"By " + link.postedBy.name} />}
-        >
-          <img src="http://americanconstruction.net/wp-content/uploads/2015/10/upload-empty.png" alt="" />
-        </CardMedia>
-
-        <CardTitle title={link.title} />
-        <CardText>
-          <div>{link.description}</div>
-          <br/>
-          <div> <strong> URL: </strong><a href={link.url}>{link.url}</a></div>
-          <div> <strong> Category: </strong> {link.category || 'None'}</div>
-          <div> <strong> Submitted On: </strong> {link.createdAt} ({timeDifferenceForDate(link.createdAt)}) </div>
-          <div> <strong> Last updated at: </strong> {link.updatedAt} ({timeDifferenceForDate(link.updatedAt)}) </div>
-          <div> <strong> Tags: </strong>
-              {link.tags.length!==0 ? link.tags.map((tagItem)=>
-              (<a>{tagItem.name} </a>)
-            ) : 'None'
-              }
-          </div>
-          <div> <strong> No. Of Offers: </strong> {link.offers.length||"N/A"} </div>
-          <div className='f6 lh-copy gray'>{link.votes.length} votes </div>
-          <div>
-          {EditButton}
-            <Dialog
-              title="Edit Submision"
-              actions={actions}
-              modal={false}
-              open={this.state.open}
-              autoScrollBodyContent={true}
+      <CardHeader
+        title={link.postedBy.name}
+        action={
+            <IconButton>
+              <MoreVertIcon />
+            </IconButton>
+          }
+        subheader={link.postedBy.position ?link.postedBy.position : "No job description yet"}
+        avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
+      />
+      <CardMedia
+            title={link.title}
             >
-            <div>
-            <TextField
-              floatingLabelText="Title"
-              defaultValue={link.title}
-              fullWidth={true}
-              onChange={(e) => this.setState({ newTitle: e.target.value })}
-            />
+            <img src="http://americanconstruction.net/wp-content/uploads/2015/10/upload-empty.png" alt="" />
+      </CardMedia>
+      <CardContent>
+      <div>{link.description}</div>
+      <br/>
+      <div> <strong> URL: </strong><a href={link.url}>{link.url}</a></div>
+      <div> <strong> Category: </strong> {link.category || 'None'}</div>
+      <div> <strong> Submitted On: </strong> {link.createdAt} ({timeDifferenceForDate(link.createdAt)}) </div>
+      <div> <strong> Last updated at: </strong> {link.updatedAt} ({timeDifferenceForDate(link.updatedAt)}) </div>
+      <div> <strong> Tags: </strong>
+          {link.tags.length!==0 ? link.tags.map((tagItem)=>
+          (<a>{tagItem.name} </a>)
+        ) : 'None'
+          }
+      </div>
+      <div> <strong> No. Of Offers: </strong> {link.offers.length||"N/A"} </div>
+      <div className='f6 lh-copy gray'>{link.votes.length} votes </div>
+      <div>
+      {EditButton}
+        <Dialog
+          title="Edit Submision"
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          autoScrollBodyContent={true}
+        >
+        <div>
+        <TextField
+          floatingLabelText="Title"
+          defaultValue={link.title}
+          fullWidth={true}
+          onChange={(e) => this.setState({ newTitle: e.target.value })}
+        />
 
-            <TextField
-              floatingLabelText="Description"
-              defaultValue={link.description}
+        <TextField
+          floatingLabelText="Description"
+          defaultValue={link.description}
+          fullWidth={true}
+          multiLine={true}
+          rows={2}
+          rowsMax={4}
+          onChange={(e) => this.setState({ newDescription: e.target.value })}
+        />
 
-              fullWidth={true}
-              multiLine={true}
-              rows={2}
-              rowsMax={4}
-              onChange={(e) => this.setState({ newDescription: e.target.value })}
-            />
+        <TextField
+          floatingLabelText="URL"
+          fullWidth={true}
+          defaultValue={link.url}
+          onChange={(e) => this.setState({ newURL: e.target.value })}
+        />
 
-            <TextField
-              floatingLabelText="URL"
-              fullWidth={true}
-              defaultValue={link.url}
-              onChange={(e) => this.setState({ newURL: e.target.value })}
-            />
-            <TextField
-              floatingLabelText="Category"
-              fullWidth={true}
-              defaultValue={link.category}
-              onChange={(e) => this.setState({ newCategory: e.target.value })}
-            />
+        <TextField
+          floatingLabelText="Category"
+          fullWidth={true}
+          defaultValue={link.category}
+          onChange={(e) => this.setState({ newCategory: e.target.value })}
+        />
 
-            </div>
-            </Dialog>
-          </div>
-          <br/>
-        </CardText>
+        </div>
+        </Dialog>
+      </div>
+      <br/>
+    </CardContent>
         <CardActions>
           <label> <strong> Share Via: </strong> </label>
-          <FlatButton label="LinkedIn" />
-          <FlatButton label="Facebook" />
-          <FlatButton label="Twitter" />
+          <IconButton aria-label="Delete" disabled color="primary">
+              <DeleteIcon />
+          </IconButton>
+          <Button>LinkedIn< /Button>
+          <Button> Facebook< / Button>
+          <Button>Twitter </ Button>
           <br/>
           <label>  <strong> Other Links: </strong> </label>
-          <FlatButton label="Github" />
-
+          <Button>Github</Button>
         </CardActions>
-      </Card>
-            <div>
-            <br/>
+    </Card>
+    <div>
+    <br/>
+    <div>
+      {userId &&
+        <Card>
+        <CardContent>
+        <CreateOffer linkId={link.id}/>
+        <br/>
+        </CardContent>
+        </Card>
+      }
+      <div>
+      <br/>
+      <label><strong>Offers :</strong></label>
+      {link.offers.map((offerItem)=>(
+        <div key={offerItem.id}>
+        <Dialog
+          title="Edit Offer"
+          actions={
+            [
+              <Button
+                color='primary'
+                onClick={() => this.setState({openOffer:false})}
+              >Cancel</Button>,
+              <Button raised
+                color='primary'
+                onClick={() => this._updateOffer(offerItem.id)}
+              >Update Offer</Button>,
+            ]
+          }
+          modal={false}
+          open={this.state.openOffer}
+          autoScrollBodyContent={true}
+        >
+        <div>
+        <TextField
+          floatingLabelText="Amount"
+          defaultValue={offerItem.amount}
+          onChange={(e) => this.setState({ newAmount: e.target.value })}
+        />
 
-            <br/>
-            <div>
-              {userId &&
-                <Card>
-                <CardText>
-                <CreateOffer linkId={link.id}/>
-                <br/>
-                </CardText>
-                </Card>
-              }
+        <TextField
+          floatingLabelText="Offer Description"
+          defaultValue={offerItem.offerdescription}
+          fullWidth={true}
+          multiLine={true}
+          rows={2}
+          rowsMax={4}
+          onChange={(e) => this.setState({ newOfferDescription: e.target.value })}
+        />
+        </div>
+        </Dialog>
+        <Card key={offerItem.id}>
+          <CardHeader
+            title={offerItem.offerBy.name}
+            subheader={offerItem.offerBy.position? offerItem.offerBy.position : "No job description or position yet"}
+            avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
+            action={ [UpdateOfferButton , DeleteOfferButton]}
+          />
+          <CardContent>
+
               <div>
-              <br/>
-              <label><strong>Offers :</strong></label>
-              {link.offers.map((offerItem)=>(
-                <div key={offerItem.id}>
-
-                <Card key={offerItem.id}>
-                  <CardHeader
-                    title={offerItem.offerBy.name}
-                    subtitle="User's Position"
-                    avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
+              <div>Amount: {offerItem.amount} hey</div>
+              <a>Description: {offerItem.offerdescription}</a><br/>
+              <div className='f6 lh-copy gray'>
+                <a><strong> Created: </strong>{timeDifferenceForDate(offerItem.createdAt)} </a><br/>
+              </div>
+              <Divider />
+              <label><strong>Comments : </strong></label>
+              {offerItem.comments.map((commentItem)=>
+                (
+                  <div key={commentItem.id}>
+                  <Dialog
+                    title="Edit Comment"
+                    actions={
+                      [
+                        <Button
+                          color='primary'
+                          onClick={() => this.setState({openComment:false})}
+                        >Cancel</Button>,
+                        <Button raised
+                          color='primary'
+                          onClick={() => this._updateComment(commentItem.id)}
+                        >Update Comment</Button>,
+                      ]
+                    }
+                    modal={false}
+                    open={this.state.openComment}
+                    autoScrollBodyContent={true}
+                  >
+                  <div>
+                  <TextField
+                    floatingLabelText="Content"
+                    fullWidth={true}
+                    multiLine={true}
+                    rows={2}
+                    rowsMax={4}
+                    defaultValue={commentItem.content}
+                    onChange={(e) => this.setState({ newContent: e.target.value })}
                   />
-                  <CardText>
 
-                      <div>
+                  </div>
+                  </Dialog>
+                  <Card >
+                    <CardHeader
+                      title={commentItem.author.name}
+                      subheader={commentItem.author.position? commentItem.author.position : "No job description or position yet"}
+                      avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
+                      action={
 
-                      <div>Amount: {offerItem.amount} hey</div>
-                      <a>Description: {offerItem.offerdescription}</a><br/>
+                      [UpdateCommentButton, DeleteCommentButton]
+                    }
+                    />
+                    <CardContent>
+                        <div>
+                        <a>{commentItem.content}</a>
+                        <br/>
 
-                      <div className='f6 lh-copy gray'>
-                        <a><strong> Created: </strong>{timeDifferenceForDate(offerItem.createdAt)} </a><br/>
-                      </div>
-                      <Divider />
-                      <label><strong>Comments : </strong></label>
-                      {offerItem.comments.map((commentItem)=>
-                        (
-                          <div key={commentItem.id}>
-                          <Card >
-                            <CardHeader
-                              title={commentItem.author.name}
-                              subtitle="User's Position"
-                              avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
-                            />
-                            <CardText>
-                                <div>
-                                <a>{commentItem.content}</a>
-                                <br/>
-                                <div className='f6 lh-copy gray'>
-                                  <a> Created: {timeDifferenceForDate(commentItem.createdAt)}</a><br/>
-                                </div>
+                        <div className='f6 lh-copy gray'>
+                          <a> Created: {timeDifferenceForDate(commentItem.createdAt)}</a><br/>
+                        </div>
 
-                                <br/>
-                                </div>
-                            </CardText>
-                          </Card>
-                          </div>
-                        )
-                      )
-                      }
-                      </div>
-                  </CardText>
-                  <CardActions>
-                  {userId &&
-                  <CreateComment offerId={offerItem.id} productId={link.id}/>
-                  }
-                  </CardActions>
-                </Card>
-                <br/>
-                </div>
-              )
+                        <br/>
+                        </div>
+                    </CardContent>
+                  </Card>
+                  </div>
+                )
               )
               }
-
               </div>
-            </div>
-            </div>
-      </div>
+          </CardContent>
+          <CardActions>
+          {userId &&
+          <CreateComment offerId={offerItem.id} productId={link.id}/>
+          }
+          </CardActions>
+        </Card>
+        <br/>
+        </div>
+      )
+      )
+      }
 
+      </div>
+    </div>
+    </div>
+
+    </div>
 
     )
   }
 
+
+  _updateOffer = async(linkId) => {
+    // study further component Life Cycle for prop changes
+    console.log('update offer')
+    const link= linkId
+    const {newAmount, newOfferDescription} = this.state
+    console.log(link)
+    console.log(newAmount)
+    console.log(newOfferDescription)
+    await this.props.updateOfferMutation({
+      variables: {
+        link ,
+        newAmount ,
+        newOfferDescription,
+      }
+
+    }
+  )
+    this.setState({openOffer: false,})
+  }
+
+  _updateComment = async(linkId) => {
+    // study further component Life Cycle for prop changes
+    console.log('update comment')
+    const link= linkId
+    const {newContent} = this.state
+    console.log(link)
+    console.log(newContent)
+    await this.props.updateCommentMutation({
+      variables: {
+        link ,
+        newContent,
+      }
+
+    }
+  )
+    this.setState({openCommenet: false,})
+  }
+
   _updateLink = async() => {
     // study further component Life Cycle for prop changes
-
     var linkId = this.props.findLinkQuery.Link.id
     var newTitle = ''
     var newDescription = ''
@@ -591,6 +744,52 @@ updateLink(
 
 }
 `
+
+const UPDATE_OFFER_MUTATION = gql`
+mutation updateOfferMutation($link:ID! , $newAmount:String! , $newOfferDescription:String!){
+updateOffer(
+  id:$link
+  amount:$newAmount
+  offerdescription:$newOfferDescription
+)
+  {
+    id
+    amount
+    offerdescription
+    createdAt
+    updatedAt
+    offerBy{
+      id
+      name
+      position
+    }
+
+  }
+
+}
+`
+
+
+const UPDATE_COMMENT_MUTATION = gql`
+mutation updateCommentMutation($link:ID! , $newContent:String!){
+updateComment(
+  id:$link
+  content: $newContent
+)
+  {
+    id
+    content
+    createdAt
+    updatedAt
+    author{
+      id
+      name
+    }
+  }
+
+}
+`
+
 const ALL_LINKS_QUERY = gql`
   query AllLinksQuery{
     allLinks {
@@ -672,6 +871,7 @@ export default compose(
   graphql(ALL_LINKS_QUERY, {name: 'allLinksQuery'}),
   graphql(CREATE_VOTE_MUTATION, {name: 'createVoteMutation'}),
   graphql(UPDATE_LINK_MUTATION, {name: 'updateLinkMutation'}),
+  graphql(UPDATE_OFFER_MUTATION, {name: 'updateOfferMutation'}),
+  graphql(UPDATE_COMMENT_MUTATION, {name: 'updateCommentMutation'}),
   graphql(FIND_LINK_QUERY, {name:'findLinkQuery' , options: (props) =>({variables:{id: props.match.params.id}})})
-
 ) (ProductPage)

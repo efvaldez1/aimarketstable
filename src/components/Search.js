@@ -8,11 +8,18 @@ import CategoryList from './CategoryList'
 
 // Material UI
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+//import Button from 'material-ui/Button';
+// import CircularProgress from 'material-ui/CircularProgress';
+//import Select from 'material-ui/Select';
 
+// v 1.0
+import Button from 'material-ui-next/Button';
+import { CircularProgress } from 'material-ui-next/Progress';
+import Select from 'material-ui-next/Select';
+
+//import MenuItem from 'material-ui/MenuItem';
+import Menu, { MenuItem } from 'material-ui/Menu';
+import Input, { InputLabel } from 'material-ui-next/Input';
 const names = [
   {name:'Oliver Hansen',value:1},
   {name:'Van Henry', value:2},
@@ -32,7 +39,13 @@ class Search extends Component {
     categoryText:'Publication',
     values:[]
   }
-  handleChange = (event, index, values) => this.setState({values});
+  handleChange = (event) => {
+    console.log("log")
+
+    console.log(event.target.value)
+    this.setState({values:event.target.value});
+
+  }
 
   menuItems(tags) {
     return names.map((nameItem) => (
@@ -86,7 +99,7 @@ class Search extends Component {
     const tagToRender = this.props.allTagQuery.allTags
 
 
-    
+
     const {values} = this.state;
     return (
 
@@ -108,11 +121,11 @@ class Search extends Component {
           <CategoryList ref="categorySelector" name="myCategoryList" onChange={this.selectCategory.bind(this)} />
 
           <br/>
-
-          <SelectField
-          multiple={true}
-          hintText="Select Tag/s"
+          <InputLabel htmlFor="name-multiple">Choose Tag/s</InputLabel>
+          <Select
+          multiple
           value={values}
+          input={<Input id="name-multiple" />}
           onChange={this.handleChange}
           >
 
@@ -120,18 +133,18 @@ class Search extends Component {
             (
               <MenuItem
                 key={tagItem.id}
-                insetChildren={true}
-                checked={values && values.indexOf(tagItem) > -1}
+
                 value={tagItem.id}
-                primaryText={tagItem.name}
-              />
+              >
+                {tagItem.name}
+              </MenuItem>
             )
             )
           }
-        </SelectField>
+        </Select>
 
           <br/>
-          <RaisedButton primary={true} label="Search" onClick={() => this._executeSearch()} />
+          <Button raised color='primary' onClick={() => this._executeSearch()}> Search< /Button>
 
         </div>
         {this.state.links.map((link, index) => <Link key={link.id} link={link} index={index}/>)}

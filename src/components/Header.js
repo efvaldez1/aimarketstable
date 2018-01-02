@@ -7,24 +7,34 @@ import { GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
 // Material UI
 //import {Tabs, Tab} from 'material-ui/Tabs';
 import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
+// import Menu from 'material-ui/Menu';
+//import MenuItem from 'material-ui/MenuItem';
+//import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+//import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
+// v1.0
+import Menu, { MenuItem } from 'material-ui/Menu';
+import SvgIcon from 'material-ui/SvgIcon';
 //import FlatButton from 'material-ui/FlatButton';
 //import Toggle from 'material-ui/Toggle';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+
 //import NavigationClose from 'material-ui/svg-icons/navigation/close';
 //import BalanceIcon from 'material-ui/svg-icons/action/account-balance';
 
 import AppBar from 'material-ui/AppBar';
-import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
+import Toolbar from 'material-ui/Toolbar';
+import Typography from 'material-ui-next/Typography';
+import {withStyles} from 'material-ui/styles';  
+import AccountCircle from 'material-ui-icons/AccountCircle';
+import MenuIcon from 'material-ui-icons/Menu';
+import Button from 'material-ui-next/Button';
 class Header extends Component {
   render() {
     const userId = localStorage.getItem(GC_USER_ID)
     const PageMenu = (
-        <IconMenu
+        <Menu
           iconButtonElement={
-            <IconButton touch={true}>
-                <NavigationExpandMoreIcon />
+            <IconButton >
+              <MenuIcon/>
               </IconButton>
           }
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -41,14 +51,14 @@ class Header extends Component {
           <Link to='/create'><MenuItem >submit product</MenuItem></Link>
           </div>
           }
-        </IconMenu>
+        </Menu>
       );
 
       const LogoutMenu = (
-        <IconMenu
+        <Menu
 
           iconButtonElement={
-            <IconButton><MoreVertIcon /></IconButton>
+            <IconButton></IconButton>
           }
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -74,7 +84,7 @@ class Header extends Component {
             </div>
         }
 
-        </IconMenu>
+        </Menu>
       );
 
       const styles = {
@@ -84,10 +94,20 @@ class Header extends Component {
       };
 
     return (
-      <div>
-        <AppBar title={<span style={styles.title}>AI Market</span>} iconElementLeft={PageMenu}  iconElementRight={LogoutMenu} />
+      <div >
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton  color="contrast" aria-label="Menu">
+            <MenuIcon />
+          </IconButton>
+          <Typography type="title" color="inherit">
+            Title
+          </Typography>
+          <Button color="contrast">Login</Button>
+        </Toolbar>
+      </AppBar>
+    </div>
 
-      </div>
 
 
     )

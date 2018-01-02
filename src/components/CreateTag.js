@@ -3,7 +3,8 @@ import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
 // Material UI
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+//import Button from 'material-ui/Button';
+import Button from 'material-ui-next/Button';
 class CreateTag extends Component {
   state = {
     name:'',
@@ -15,7 +16,7 @@ class CreateTag extends Component {
       <div>
         <div className='flex flex-column mt3'>
           <TextField
-            hintText="Title for Tag"
+            placeholder="Title for Tag"
             value = {this.state.name}
             onChange={(e) => this.setState({ name: e.target.value })}
           /><br/>
@@ -23,7 +24,8 @@ class CreateTag extends Component {
 
         </div>
 
-        <RaisedButton primary={true} label="Submit" onClick={() => this._createTag()} />
+
+        <Button raised color='primary' onClick={() => this._createTag ()}> "Submit "</Button >
       </div>
     )
   }

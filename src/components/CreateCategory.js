@@ -3,7 +3,9 @@ import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
 
 //Material UI
-import RaisedButton from 'material-ui/RaisedButton';
+//import Button from 'material-ui/Button';
+// v 1.0
+import Button from 'material-ui-next/Button';
 import TextField from 'material-ui/TextField';
 
 class CreateCategory extends Component {
@@ -26,7 +28,7 @@ class CreateCategory extends Component {
         </div>
 
 
-        <RaisedButton primary={true} label="Submit Category" onClick={() => this._createCategory ()} />
+        <Button raised color='primary' onClick={() => this._createCategory ()}> "Submit "</Button >
       </div>
     )
   }
