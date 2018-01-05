@@ -29,6 +29,9 @@ class LinkList extends Component {
       return <div>Error</div>
     }
 
+    if(!this.props.allLinksQuery.allLinks){
+      return <div> Cannot load products at the moment.</div>
+    }
     const isNewPage = this.props.location.pathname.includes('new')
     console.log("links to render")
 
@@ -54,6 +57,7 @@ class LinkList extends Component {
   }
 
   _getLinksToRender = (isNewPage) => {
+    console.log("get links to render")
     if (isNewPage) {
       return this.props.allLinksQuery.allLinks
     }
@@ -115,6 +119,7 @@ class LinkList extends Component {
                 postedBy {
                   id
                   name
+                  position
                 }
                 offers{
                   id
@@ -374,7 +379,7 @@ export const ALL_LINKS_QUERY = gql`
           id
         }
       }
-      offers(filter:{isDeleted:false}){
+      offers{
         id
         amount
         offerdescription
