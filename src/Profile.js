@@ -134,8 +134,8 @@ class Profile extends Component {
               <RaisedButton primary={true} label="Update Profile" onClick={() => this._updateUser()} />
             </CardText>
             <CardActions>
-              <label> Follow On: </label>
-              <a href="https://www.graph.cool/docs/reference/graphql-api/mutation-api-ol0yuoz6go/#updating-a-node"><FlatButton label="LinkedIn"> </FlatButton></a>
+              <label> Follow On: (Not Yet Implemented)</label>
+              <a href="https://ph.linkedin.com/"><FlatButton label="LinkedIn"> </FlatButton></a>
               <a> <FlatButton label="Medium" /> </a>
               <a> <FlatButton label="Twitter" /> </a>
               <a> <FlatButton label="Github" /> </a>

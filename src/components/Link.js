@@ -51,6 +51,7 @@ class Product extends Component {
   super(props);
   this.state = {
     open: false,
+    openVotedAgain:false,
   };
 }
 
@@ -65,6 +66,11 @@ handleRequestClose = () => {
     open: false,
   });
 };
+handleRequestCloseVotedAgain = () => {
+  this.setState({
+    openVotedAgain: false,
+  });
+};
   render() {
     const userId = localStorage.getItem(GC_USER_ID)
 
@@ -74,7 +80,7 @@ handleRequestClose = () => {
       <Card>
       <CardHeader
         title={<Link to={'/profile/'+this.props.link.postedBy.id} > {this.props.link.postedBy.name ? this.props.link.postedBy.name : 'Unknown'}</Link>}
-        
+
         subheader={this.props.link.postedBy.position ? this.props.link.postedBy.position : "No job description yet"}
         avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
       >
@@ -127,6 +133,12 @@ handleRequestClose = () => {
         </div>
         </CardActions>
       </Card>
+      <Snackbar
+          open={this.state.openVotedAgain}
+          message="Sorry, but you have already voted for this."
+          autoHideDuration={3000}
+          onRequestClose={this.handleRequestCloseVotedAgain}
+        />
 
       <Snackbar
           open={this.state.open}
@@ -140,14 +152,15 @@ handleRequestClose = () => {
 
   _voteForLink = async () => {
     const userId = localStorage.getItem(GC_USER_ID)
-    this.setState({open: true,})
+
     const voterIds = this.props.link.votes.map(vote => vote.user.id)
     if (voterIds.includes(userId)) {
-
+      this.setState({openVotedAgain:true,})
       console.log(`User (${userId}) already voted for this link.`)
       return
     }
 
+    this.setState({open: true,})
     const linkId = this.props.link.id
     await this.props.createVoteMutation({
       variables: {

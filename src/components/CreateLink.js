@@ -20,6 +20,7 @@ import Button from 'material-ui-next/Button';
 // v 1.0
 import { CircularProgress } from 'material-ui-next/Progress';
 import Input, { InputLabel } from 'material-ui-next/Input';
+import Snackbar from 'material-ui-next/Snackbar';
 const style = {
   margin: 12,
 };
@@ -43,7 +44,14 @@ class CreateLink extends Component {
     this.setState({values:event.target.value })
   }
 
+  handleRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
   state = {
+    open:false,
     title: '',
     description: '',
     url: '',
@@ -91,7 +99,7 @@ class CreateLink extends Component {
         <br/>
         <TextField
           multiline
-          placeholder="Enter Description"          
+          placeholder="Enter Description"
           rows={1}
           rowsMax={15}
           value={this.state.description}
@@ -120,7 +128,7 @@ class CreateLink extends Component {
       {tagToRender.map((tagItem)=>
         (
           <MenuItem
-            key={tagItem.id}
+
             value={tagItem.id}
           >
             {tagItem.name}
@@ -131,9 +139,16 @@ class CreateLink extends Component {
     </Select>
         </div>
         <Button raised onClick={() => this._createLink ()}  color='primary' style={style}>Submit</Button>
+        <Snackbar
+            open={this.state.open}
+            message="No user logged in!"
+            autoHideDuration={3000}
+            onClose={this.handleRequestClose}
+          />
       </div>
     )
   }
+
 
   _createLink = async () => {
     console.log('create link')
@@ -146,7 +161,9 @@ class CreateLink extends Component {
 
     const postedById = localStorage.getItem(GC_USER_ID)
     if (!postedById) {
+
       console.error('No user logged in')
+      this.setState({open:true})
       return
     }
     console.log(postedById)

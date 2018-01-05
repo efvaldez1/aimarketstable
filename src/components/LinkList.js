@@ -30,10 +30,11 @@ class LinkList extends Component {
     }
 
     const isNewPage = this.props.location.pathname.includes('new')
-    const linksToRender = this._getLinksToRender(isNewPage)
-    const page = parseInt(this.props.match.params.page, 10)
+    console.log("links to render")
 
+    const linksToRender = this._getLinksToRender(isNewPage)
     console.log(linksToRender)
+    const page = parseInt(this.props.match.params.page, 10)
 
     return (
       <div>
@@ -106,6 +107,7 @@ class LinkList extends Component {
                 category
                 createdAt
                 updatedAt
+                isDeleted
                 tags{
                   id
                   name
@@ -355,6 +357,7 @@ export const ALL_LINKS_QUERY = gql`
     allLinks(first: $first, skip: $skip, orderBy: $orderBy , filter:{isDeleted:false}) {
       id
       title
+      isDeleted
       updatedAt
       createdAt
       url
@@ -371,7 +374,7 @@ export const ALL_LINKS_QUERY = gql`
           id
         }
       }
-      offers{
+      offers(filter:{isDeleted:false}){
         id
         amount
         offerdescription
@@ -385,7 +388,7 @@ export const ALL_LINKS_QUERY = gql`
         id
         name
       }
-      isDeleted
+
 
     }
     _allLinksMeta {

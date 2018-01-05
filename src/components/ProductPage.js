@@ -158,11 +158,13 @@ class ProductPage extends Component {
         avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
       />
       <CardMedia
+            image="http://americanconstruction.net/wp-content/uploads/2015/10/upload-empty.png"
             title={link.title}
             >
             <img src="http://americanconstruction.net/wp-content/uploads/2015/10/upload-empty.png" alt="" />
       </CardMedia>
       <CardContent>
+      <div><strong>{link.title}</strong></div>
       <div>{link.description}</div>
       <br/>
       <div> <strong> URL: </strong><a href={link.url}>{link.url}</a></div>
@@ -225,13 +227,11 @@ class ProductPage extends Component {
       <br/>
     </CardContent>
         <CardActions>
-          <label> <strong> Share Via: </strong> </label>
-          <IconButton aria-label="Delete" disabled color="primary">
-              <DeleteIcon />
-          </IconButton>
-          <Button><Icon>facebook</Icon>< /Button>
-          <Button> <i class="material-icon">facebook</i>< / Button>
-          <Button><SettingsIcon/> </ Button>
+          <label> <strong> Share Via: (Not yet implemented)</strong> </label>
+
+          <Button>Facebook </Button>
+          <Button> Twitter < / Button>
+          <Button> LinkedIn </ Button>
           <br/>
           <label>  <strong> Other Links: </strong> </label>
           <Button>Github</Button>
@@ -289,7 +289,6 @@ class ProductPage extends Component {
           fullWidth={true}
           multiLine={true}
           rows={2}
-
           rowsMax={4}
           onChange={(e) => this.setState({ newOfferDescription: e.target.value })}
           />

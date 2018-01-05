@@ -110,7 +110,9 @@ class SubmissionPage extends Component {
               console.log(this.props.findUserQuery.error)
               return <div>Error</div>
     }
-
+    if (this.props.findUserQuery.User.links.length===0) {
+              return  <div>No submissions yet.</div>
+    }
     console.log("submission page found")
     const user = this.props.findUserQuery.User
     console.log(this.props.findUserQuery.User)

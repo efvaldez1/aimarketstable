@@ -17,7 +17,7 @@ class CreateTag extends Component {
         <div className='flex flex-column mt3  '>
           <TextField
             placeholder="Title for Tag"
-            fullwidth={false}
+            fullwidth="false"
             value = {this.state.name}
             onChange={(e) => this.setState({ name: e.target.value })}
           ></TextField>

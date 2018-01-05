@@ -118,9 +118,14 @@ class Profile extends Component {
 
               <CardHeader  />
               <CardContent>
-                hey
+                <div>{user.about||"No description about self yet"}</div>
+                <br/>
+                <div><strong>Education : </strong> {user.education||"N/A"}</div>
+                <div><strong> Number of Submissions: </strong> {user.links.length|| '0' }</div>
+
               </CardContent>
               <CardActions>
+                
                 <label> Follow On: </label>
                 <a href="https://www.graph.cool/docs/reference/graphql-api/mutation-api-ol0yuoz6go/#updating-a-node"><Button> LinkedIn </Button></a>
                 <a> <Button >Medium </Button> </a>
@@ -257,7 +262,6 @@ const FIND_USER_QUERY = gql`
           id
         }
       }
-
     }
   }
 `
@@ -289,7 +293,6 @@ mutation updateUserMutation ($userId:ID! , $newName:String , $newPosition:String
           id
         }
       }
-
     }
   }
 `
@@ -362,7 +365,6 @@ const ALL_USERS_QUERY = gql`
             content
           }
         }
-
       }
     }
   }
