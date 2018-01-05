@@ -17,7 +17,7 @@ import Button from 'material-ui-next/Button';
 import Snackbar from 'material-ui/Snackbar';
 import Chip from 'material-ui/Chip';
 import ThumbUp from 'material-ui-icons/ThumbUp';
-
+import Search from 'material-ui-icons/Search';
 import PropTypes from 'prop-types';
 import {withStyles } from 'material-ui/styles';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
@@ -85,7 +85,7 @@ handleRequestClose = () => {
       </CardHeader>
       <CardContent>
 
-      <div><strong>Title: </strong> <Link to={'/product/'+this.props.link.id} > {this.props.link.title}</Link></div>
+      <div><strong>Title: </strong> {this.props.link.title} </div>
       <div><strong> Description:</strong> {this.props.link.description} </div>
       <div> <strong> URL: </strong> <a href={this.props.link.url}>{this.props.link.url}</a></div>
       <div> <strong> Category: </strong> {this.props.link.category}  </div>
@@ -108,16 +108,27 @@ handleRequestClose = () => {
       <div><strong> Submited On:</strong> {this.props.link.createdAt} ({timeDifferenceForDate(this.props.link.createdAt)})</div>
       <div><strong> Last Updated:</strong> ({timeDifferenceForDate(this.props.link.updatedAt)})</div>
       <br/>
-      <div className='flex items-center'>
-           {userId && <div className='ml1 gray f11' onClick={() => this._voteForLink()}>Vote <IconButton aria-label="Delete">
-      <ThumbUp />
-    </IconButton> </div>}
-      </div>
+
       <br/>
       <div className='f6 lh-copy gray'>  {this.props.link.votes.length} votes </div>
       </CardContent>
         <CardActions>
-          <Button dense>Learn More</Button>
+        <div className='flex items-center'>
+             {userId &&
+               <div>
+                <Button style={styles2.button} onClick={() => this._voteForLink()}>
+                  Vote
+                  <ThumbUp style={styles2.rightIcon}/>
+                </Button>
+                </div>
+              }
+              <div>
+               <Button component={Link} to={'/product/'+this.props.link.id} style={styles2.button} onClick={() => this._voteForLink()}>
+                  Learn More
+                 <Search style={styles2.rightIcon}/>
+               </Button>
+               </div>
+        </div>
         </CardActions>
       </Card>
 

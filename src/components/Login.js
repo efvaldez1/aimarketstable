@@ -4,7 +4,7 @@ import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 
 //Material UI
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui-next/TextField';
 //import Button from 'material-ui/Button';
 // v1.0
 import Button from 'material-ui-next/Button';
@@ -29,24 +29,26 @@ class Login extends Component {
           {!this.state.login &&
 
           <TextField
-          hintText="Your name"
+          placeholder="Your name"
           value={this.state.name}
           onChange={(e) => this.setState({ name: e.target.value })}
           ></TextField>
           }
-
+          <br/>
           <TextField
-          hintText="Your email address"
+          placeholder="Your email address"
           value={this.state.email}
           onChange={(e) => this.setState({ email: e.target.value })}
           ></TextField>
+          <br/>
 
           <TextField
-          hintText="Choose a safe password"
+          placeholder="Choose a safe password"
           type="password"
           value={this.state.password}
           onChange={(e) => this.setState({ password: e.target.value })}
           />
+          <br/>
         </div>
         <div>
           <Button raised style={style} color="primary" onClick={() => this._confirm()}> {this.state.login ? 'login' : 'create account' }</Button>

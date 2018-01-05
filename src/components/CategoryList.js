@@ -6,7 +6,9 @@ import gql from 'graphql-tag'
 //Material UI
 //import SelectField from 'material-ui/SelectField';
 //import MenuItem from 'material-ui/MenuItem';
-
+import Input, { InputLabel } from 'material-ui-next/Input';
+import { MenuItem } from 'material-ui-next/Menu';
+import Select from 'material-ui-next/Select';
 
 class CategoryList extends Component {
   handleChange = (event, index, category) => {
@@ -25,22 +27,29 @@ class CategoryList extends Component {
     }
 
     const categoryToRender = this.props.allCategoryQuery.allCategories
-    
+    console.log('val')
+    console.log(this.props)
     return (
       <div>
 
-    <select name={this.props.name} onChange={this.props.onChange}>
-    {categoryToRender.map((category)=>
-        (
-          <option key={category.id} value={category.name}>
-          {category.name}
-          </option>
-        )
-      )
-    }
-    </select>
 
 
+    <InputLabel htmlFor="category">Choose Category: </InputLabel>
+          <Select
+            fullWidth
+            name="category"
+            value={this.props.value}
+            onChange={this.props.onChange}
+            input={<Input name="category" id="category" />}
+          >
+          {categoryToRender.map((category)=>
+              (
+
+                <MenuItem value={category.name}>{category.name}</MenuItem>
+              )
+            )
+          }
+    </Select>
 
 
       </div>

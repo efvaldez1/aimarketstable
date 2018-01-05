@@ -7,7 +7,7 @@ import Link from './Link'
 import CategoryList from './CategoryList'
 
 // Material UI
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui-next/TextField';
 //import Button from 'material-ui/Button';
 // import CircularProgress from 'material-ui/CircularProgress';
 //import Select from 'material-ui/Select';
@@ -72,7 +72,6 @@ class Search extends Component {
 
   }
   selectCategory(selectedValue){
-
     this.setState({ categoryText: selectedValue.target.value })
 
   }
@@ -102,12 +101,11 @@ class Search extends Component {
 
     const {values} = this.state;
     return (
-
-      <div>
+      <div className='flex flex-column mt3'>
         <div>
         <div className='flex flex-column mt3'>
           <TextField
-            hintText="Search Title Or Description"
+            placeholder="Search Title Or Description"
             value = {this.state.searchText}
             onChange={(e) => this.setState({ searchText: e.target.value })}
           /><br/>
@@ -115,15 +113,13 @@ class Search extends Component {
 
         </div>
 
-
-
-          <label> Category : </label>
-          <CategoryList ref="categorySelector" name="myCategoryList" onChange={this.selectCategory.bind(this)} />
+          <CategoryList ref="categorySelector" value={this.state.categoryText} name="myCategoryList" onChange={this.selectCategory.bind(this)} />
 
           <br/>
           <InputLabel htmlFor="name-multiple">Choose Tag/s</InputLabel>
           <Select
           multiple
+          fullWidth
           value={values}
           input={<Input id="name-multiple" />}
           onChange={this.handleChange}

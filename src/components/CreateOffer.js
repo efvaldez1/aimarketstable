@@ -9,7 +9,7 @@ import Snackbar from 'material-ui/Snackbar';
 //import Button from 'material-ui/Button';
 // v 1.0
 import Button from 'material-ui-next/Button';
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui-next/TextField';
 class CreateOffer extends Component {
 
   handleSelect(event){
@@ -47,13 +47,13 @@ class CreateOffer extends Component {
         <div className='flex flex-column mt3'>
 
         <TextField
-          hintText="Enter Amount"
+          placeholder="Enter Amount"
           value={this.state.amount}
           onChange={(e) => this.setState({ amount: e.target.value })}
         />
 
         <TextField
-          hintText="Enter Message"
+          placeholder="Enter Message"
           value={this.state.offerdescription}
           fullWidth={true}
           onChange={(e) => this.setState({ offerdescription: e.target.value })}
@@ -103,12 +103,13 @@ mutation CreateOfferMutation($amount:String!,$offerdescription:String!,$link:ID!
     offerdescription:$offerdescription
     linkId:$link
     offerById:$userId
-
+    isDeleted:false
   ){
     id
     amount
     createdAt
     updatedAt
+    isDeleted
     offerdescription
     link{
       id

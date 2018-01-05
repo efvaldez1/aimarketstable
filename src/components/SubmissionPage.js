@@ -7,7 +7,7 @@ import gql from 'graphql-tag'
 import { Link } from 'react-router-dom'
 
 // Material UI
-import {Card, CardActions, CardText} from 'material-ui/Card'
+import Card, {CardContent, CardActions, CardHeader} from 'material-ui-next/Card'
 //import Avatar from 'material-ui/Avatar';
 //import IconButton from 'material-ui/IconButton';
 //import Img from 'react-image';
@@ -18,9 +18,9 @@ import { CircularProgress } from 'material-ui-next/Progress';
 // import Button raised from 'material-ui/Button raised';
 //v 1.0
 import Button from 'material-ui-next/Button';
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui-next/TextField';
 import Dialog from 'material-ui/Dialog';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import {Tabs, Tab} from 'material-ui-next/Tabs';
 
 //import Snackbar from 'material-ui/Snackbar';
 import Chip from 'material-ui/Chip';
@@ -60,7 +60,7 @@ class SubmissionPage extends Component {
   };
   handleCloseConfirm = () => {
 
-    this.setState({open: false});
+    this.setState({openConfirm: false});
   };
   handleClose = (linkId) => {
 
@@ -121,151 +121,140 @@ class SubmissionPage extends Component {
     console.log(canSelect)
     const actionsConfirm = [
       <Button
-        label="Cancel"
-        primary={false}
+        color='primary'
         onClick={this.handleCloseConfirm}
-      />,
+      >Cancel</Button>,
       <Button
-        label="Delete"
-        primary={true}
-
-
-      />,
+        color='primary'
+      > Delete </ Button>,
     ];
     const actions = [
         <Button
-          label="Cancel"
-          primary={false}
+          color='primary'
           onClick={this.handleClose}
-        />,
+        >Cancel</Button>,
         <Button
-          label="Submit"
-          primary={true}
+          color='primary'
           onClick={() => this._updateLink()}
-        />,
+        >Submit</Button>,
       ]
-
-      return (
+    return (
+      <div>
         <div>
-
-        <Tabs>
-          <Tab label = 'Submissions'>
-          <div>
-          {user.links.map((link,id)=>
-            (
-              <Card key={link.id}>
-              <CardText>
-              <div><strong>Title: </strong> <Link to={'/product/'+link.id} > {link.title}</Link></div>
-              <div><strong> Description:</strong> {link.description} </div>
-              <div> <strong> URL: </strong> <a href={link.url}>{link.url}</a></div>
-              <div> <strong> Category: </strong> {link.category}  </div>
-              <div> <strong> No. of Tags: </strong> {link.tags.length||"None"}  </div>
-              <div style={styles.wrapper}>
-
-                {link.tags.map((tagItem)=>
-                    (
-                      <Chip key= {tagItem.id}
-                        style={styles.chip}
-                      >
-                        {tagItem.name}
-                      </Chip>
-
-                    )
+        {user.links.map((link,id)=>
+          (
+            <Card key={link.id}>
+            <CardContent>
+            <div><strong>Title: </strong> <Link to={'/product/'+link.id} > {link.title}</Link></div>
+            <div><strong> Description:</strong> {link.description} </div>
+            <div> <strong> URL: </strong> <a href={link.url}>{link.url}</a></div>
+            <div> <strong> Category: </strong> {link.category}  </div>
+            <div> <strong> No. of Tags: </strong> {link.tags.length||"None"}  </div>
+            <div style={styles.wrapper}>
+              {link.tags.map((tagItem)=>
+                  (
+                    <Chip
+                    key={tagItem.id}
+                    >
+                    {tagItem.name}
+                    </Chip>
                   )
-                }
-              </div>
-
-              <div><strong> Submited On:</strong> {link.createdAt} ({timeDifferenceForDate(link.createdAt)})</div>
-              <div><strong> Last Updated:</strong> ({timeDifferenceForDate(link.updatedAt)})</div>
-              <br/>
-              <div className='f6 lh-copy gray'>  {link.votes.length} votes </div>
-              <label> Share On: (Not yet implemented) </label>
-              <Button label="LinkedIn" />
-              <Button label="Facebook" />
-              <Button label="Twitter" />
-              </CardText>
-              <CardActions>
-              { canSelect &&
-                <div>
-                <Button raised primary={false} label="Delete " onClick={() => {
-                    this.handleConfirm()
-
-                }} />
-                </div>
+                )
               }
-              <Dialog
-                title="Edit Submision"
-                actions={actions}
-                modal={false}
-                open={this.state.open}
-                autoScrollBodyContent={true}
-              >
+            </div>
+            <div><strong> Submited On:</strong> {link.createdAt} ({timeDifferenceForDate(link.createdAt)})</div>
+            <div><strong> Last Updated:</strong> ({timeDifferenceForDate(link.updatedAt)})</div>
+            <br/>
+            <div className='f6 lh-copy gray'>  {link.votes.length} votes </div>
+            <label> Share On: (Not yet implemented) </label>
+            <Button > LinkedIn</Button>
+            <Button  > Facebook </Button>
+            <Button > Twitter</Button>
+            </CardContent>
+            <CardActions>
+            { canSelect &&
               <div>
-              <TextField
-                floatingLabelText="Title"
-                defaultValue={link.title}
-                fullWidth={true}
-                onChange={(e) => this.setState({ newTitle: e.target.value })}
-              />
-
-              <TextField
-                floatingLabelText="Description"
-                defaultValue={link.description}
-                fullWidth={true}
-                multiLine={true}
-                rows={2}
-                rowsMax={4}
-                onChange={(e) => this.setState({ newDescription: e.target.value })}
-              />
-
-              <TextField
-                floatingLabelText="URL"
-                fullWidth={true}
-                defaultValue={link.url}
-                onChange={(e) => this.setState({ newURL: e.target.value })}
-              />
-              <TextField
-                floatingLabelText="Category"
-                fullWidth={true}
-                defaultValue={link.category}
-                onChange={(e) => this.setState({ newCategory: e.target.value })}
-              />
-
+              <Button raised color='primary'  onClick={() => {
+                  this.handleConfirm()
+              }}>Delete</Button>
               </div>
-              </Dialog>
+            }
+            <Dialog
+              placeholder="Edit Submision"
+              actions={
+                <Button
+                  color='primary'
+                  onClick={this.handleClose}
+                >Cancel</Button>,
+                <Button
+                  color='primary'
+                  onClick={() => this._updateLink()}
+                >Submit</Button>
+              }
 
-              <Dialog
-                actions={[
-                  <Button
-                    label="Cancel"
-                    primary={false}
-                    onClick={this.handleCloseConfirm}
-                  />,
-                  <Button
-                    label="Delete"
-                    primary={true}
-                    onClick = {() => this._deleteSubmissions(link.id)}
-                  />,
-                ]}
-                modal={true}
-                open={this.state.openConfirm}
-                onRequestClose={this.confirmClose}
-              >
-                Are you sure you want to delete "{link.title}"
-              </Dialog>
+              open={this.state.open}
+              autoScrollBodyContent={true}
+            >
+            <div>
+            <TextField
+              placeholder="Title"
+              defaultValue={link.title}
+              fullWidth
+              onChange={(e) => this.setState({ newTitle: e.target.value })}
+            />
 
-              </CardActions>
-              </Card>
-            )
+            <TextField
+              placeholder="Description"
+              defaultValue={link.description}
+
+              multiline
+              rows={2}
+
+              onChange={(e) => this.setState({ newDescription: e.target.value })}
+            />
+
+            <TextField
+              placeholder="URL"
+              fullWidth
+              defaultValue={link.url}
+              onChange={(e) => this.setState({ newURL: e.target.value })}
+            />
+
+            <TextField
+              placeholder="Category"
+              fullWidth
+              defaultValue={link.category}
+              onChange={(e) => this.setState({ newCategory: e.target.value })}
+            />
+
+            </div>
+            </Dialog>
+
+            <Dialog
+              actions={[
+                <Button
+                  color='primary'
+                  onClick={this.handleCloseConfirm}
+                >Cancel</Button>,
+                <Button
+                  color='primary'
+                  onClick = {() => this._deleteSubmissions(link.id)}
+                >Delete</Button>,
+              ]}
+              open={this.state.openConfirm}
+              onRequestClose={this.confirmClose}
+            >
+              Are you sure you want to delete "{link.title}" ?
+            </Dialog>
+            </CardActions>
+            </Card>
           )
-          }
-
-          </div>
-          </Tab>
-        </Tabs>
+        )
+        }
 
         </div>
-      )
+      </div>
+    )
   }
 
   _deleteSubmissions = async(linkId) => {
@@ -279,20 +268,20 @@ class SubmissionPage extends Component {
       variables: {
         link
       }
+
     }
   )
     this.setState({openConfirm: false,})
   }
+
   _updateLink = async(linkId) => {
     // study further component Life Cycle for prop changes
     console.log('updateLink');
     console.log(linkId)
-
     var newTitle = ''
     var newDescription = ''
     var newURL = ''
     var newCategory = ''
-
     if(this.state.newTitle===''){
       newTitle=this.link.title
     }else{
@@ -313,7 +302,6 @@ class SubmissionPage extends Component {
     }else{
       newCategory=this.state.newCategory
     }
-
     console.log(linkId)
     console.log(newTitle)
     console.log(newDescription)
@@ -401,15 +389,19 @@ mutation UpdateLinkQuery($id:ID! $newTitle:String! $newDescription:String! $newU
     }
     tags{
       id
+      name
     }
   }
 }
 `
+
 const DELETE_LINK_MUTATION = gql`
-mutation deleteLinkMutation ($link: ID!){
-  deleteLink(id:$link){
+mutation updateLinkMutation ($link: ID!){
+  updateLink(id:$link , isDeleted:true){
     id
     title
+    isDeleted
+    updatedAt
   }
 }
 `
@@ -419,5 +411,4 @@ mutation deleteLinkMutation ($link: ID!){
 export default compose(
   graphql(FIND_USER_QUERY, { name: 'findUserQuery' , options: (props) =>({variables:{userId: props.match.params.id}})} ),
   graphql(DELETE_LINK_MUTATION, {name:'deleteLinkMutation'}),
-
 )(SubmissionPage)

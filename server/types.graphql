@@ -17,7 +17,8 @@ type Link @model {
   votes: [Vote!]! @relation(name: "VotesOnLink")
   category: String!
   offers: [Offer!]! @relation(name: "LinksOffer")
-  tags: [Tag!]! @relation(name: "LinkTags")
+  tags: [Tag!]! @relation(name: "LinkTags)
+  isDeleted: Boolean @migrationvalue(value: "false")
 }
 
 type Offer @model {
@@ -29,6 +30,7 @@ type Offer @model {
   createdAt: DateTime!
   updatedAt: DateTime!
   comments: [Comment!]! @relation(name: "OfferComments")
+  isDeleted: Boolean @migrationvalue(value: "false")
 }
 
 type Comment @model {
@@ -38,6 +40,7 @@ type Comment @model {
   author: User @relation(name: "UserComments")
   createdAt: DateTime!
   updatedAt: DateTime!
+  isDeleted: Boolean @migrationvalue(value: "false")
 }
 
 type User @model {

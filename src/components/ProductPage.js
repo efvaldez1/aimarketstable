@@ -30,29 +30,40 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import IconButton from 'material-ui/IconButton';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import DeleteIcon from 'material-ui-icons/Delete';
+import SettingsIcon from 'material-ui-icons/Settings';
+import EditIcon from 'material-ui-icons/Edit';
 import Chip from 'material-ui/Chip';
 import { Link } from 'react-router-dom';
 import Snackbar from 'material-ui/Snackbar';
+import Icon from 'material-ui-next/Icon';
 class ProductPage extends Component {
+  constructor() {
+    super();
+    this.state = {
+      link:{},
+      newTitle:'',
+      newDescription:'',
+      newURL:'',
+      newCategory:'',
+      newAuthor:'',
+      open: false,
+      openComment:false,
+      openOffer:false,
+      newAmount: '',
+      newOfferDescription: '',
+      newContent: '',
+    }
+    this.baseState = this.state
+  }
+
   componentDidMount() {
     this._subscribeToNewOffers()
     this._subscribeToNewComments()
     this._subscribeToUpdatedLinks()
-
   }
-  state = {
-    link:{},
-    newTitle:'',
-    newDescription:'',
-    newURL:'',
-    newCategory:'',
-    newAuthor:'',
-    open: false,
-    openComment:false,
-    openOffer:false,
-    newAmount: '',
-    newOfferDescription: '',
-    newContent: '',
+
+  resetState = () => {
+    this.setState(this.baseState)
   }
 
   handleOpen = () => {
@@ -65,7 +76,8 @@ class ProductPage extends Component {
 
 
   render() {
-
+    console.log("base state")
+    console.log(this.baseState)
     const actions = [
       <Button
         color='primary'
@@ -109,19 +121,25 @@ class ProductPage extends Component {
     }
     //const id = this.props.match.params.id
     const link = this.props.findLinkQuery.Link
+    console.log("Ids of users")
+
     const userId = localStorage.getItem(GC_USER_ID)
+    console.log(this.props.findLinkQuery.Link.postedBy.id)
+    console.log(userId)
     let  EditButton=null
     let DeleteOfferButton = null
     let UpdateOfferButton = null
     let UpdateCommentButton = null
     let DeleteCommentButton = null
-    if(link.postedBy.id===userId) {
-        EditButton = <Button raised color='primary' onClick={this.handleOpen}> "Edit Submission" </Button>
-        DeleteOfferButton  = <IconButton><DeleteIcon /></IconButton>
-        UpdateOfferButton  = <Button onClick={() => this.setState({openOffer:true}) }> Edit </Button>
-        UpdateCommentButton  = <Button onClick={() => this.setState({openComment:true}) }> Edit </Button>
-        DeleteCommentButton = <IconButton><DeleteIcon /></IconButton>
-    }
+    //if(link.postedBy.id===userId) {
+    //    console.log("can edit offer")
+    //    console.log()
+        EditButton = <Button raised  onClick={this.handleOpen} > Edit Submission<EditIcon></EditIcon> </Button>
+        DeleteOfferButton  = <Button onClick={() => this.setState({openOffer:true}) }>Delete <DeleteIcon></DeleteIcon> </Button>
+        UpdateOfferButton  = <Button onClick={() => this.setState({openOffer:true}) }>Edit Offer<EditIcon></EditIcon> </Button>
+        UpdateCommentButton  = <Button onClick={() => this.setState({openComment:true}) }>Edit Comment<EditIcon></EditIcon> </Button>
+        DeleteCommentButton = <Button onClick={() => this.setState({openOffer:true}) }>Delete<DeleteIcon></DeleteIcon> </Button>
+    //}
 
     return (
       <div>
@@ -157,7 +175,7 @@ class ProductPage extends Component {
       <div> <strong> No. Of Offers: </strong> {link.offers.length||"N/A"} </div>
       <div className='f6 lh-copy gray'>{link.votes.length} votes </div>
       <div>
-      {EditButton}
+      {(link.postedBy.id===userId)? EditButton : null}
         <Dialog
           title="Edit Submision"
           actions={actions}
@@ -166,6 +184,7 @@ class ProductPage extends Component {
           autoScrollBodyContent={true}
         >
         <div>
+
         <TextField
           floatingLabelText="Title"
           defaultValue={link.title}
@@ -207,9 +226,9 @@ class ProductPage extends Component {
           <IconButton aria-label="Delete" disabled color="primary">
               <DeleteIcon />
           </IconButton>
-          <Button>LinkedIn< /Button>
-          <Button> Facebook< / Button>
-          <Button>Twitter </ Button>
+          <Button><Icon>facebook</Icon>< /Button>
+          <Button> <i class="material-icon">facebook</i>< / Button>
+          <Button><SettingsIcon/> </ Button>
           <br/>
           <label>  <strong> Other Links: </strong> </label>
           <Button>Github</Button>
@@ -231,13 +250,21 @@ class ProductPage extends Component {
       <label><strong>Offers :</strong></label>
       {link.offers.map((offerItem)=>(
         <div key={offerItem.id}>
+
         <Dialog
+          key={offerItem.id}
           title="Edit Offer"
           actions={
             [
               <Button
                 color='primary'
-                onClick={() => this.setState({openOffer:false})}
+                onClick={() =>
+                  {
+                    this.setState({openOffer:false})
+                    this.resetState()
+                  }
+
+              }
               >Cancel</Button>,
               <Button raised
                 color='primary'
@@ -250,6 +277,7 @@ class ProductPage extends Component {
           autoScrollBodyContent={true}
         >
         <div>
+        <div><label><strong>ID: </strong></label>{offerItem.id}</div><br/>
         <TextField
           floatingLabelText="Amount"
           defaultValue={offerItem.amount}
@@ -262,9 +290,10 @@ class ProductPage extends Component {
           fullWidth={true}
           multiLine={true}
           rows={2}
+
           rowsMax={4}
           onChange={(e) => this.setState({ newOfferDescription: e.target.value })}
-        />
+          />
         </div>
         </Dialog>
         <Card key={offerItem.id}>
@@ -272,12 +301,12 @@ class ProductPage extends Component {
             title={offerItem.offerBy.name}
             subheader={offerItem.offerBy.position? offerItem.offerBy.position : "No job description or position yet"}
             avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
-            action={ [UpdateOfferButton , DeleteOfferButton]}
+            action={(offerItem.offerBy.id===userId)? [UpdateOfferButton , DeleteOfferButton]:null}
           />
           <CardContent>
 
               <div>
-              <div>Amount: {offerItem.amount} hey</div>
+              <div>Amount: {offerItem.amount}</div>
               <a>Description: {offerItem.offerdescription}</a><br/>
               <div className='f6 lh-copy gray'>
                 <a><strong> Created: </strong>{timeDifferenceForDate(offerItem.createdAt)} </a><br/>
@@ -293,7 +322,12 @@ class ProductPage extends Component {
                       [
                         <Button
                           color='primary'
-                          onClick={() => this.setState({openComment:false})}
+                          onClick={() =>
+                        {
+                          this.setState({openComment:false})
+                          this.resetState()}
+                        }
+
                         >Cancel</Button>,
                         <Button raised
                           color='primary'
@@ -323,10 +357,7 @@ class ProductPage extends Component {
                       title={commentItem.author.name}
                       subheader={commentItem.author.position? commentItem.author.position : "No job description or position yet"}
                       avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
-                      action={
-
-                      [UpdateCommentButton, DeleteCommentButton]
-                    }
+                      action={(commentItem.author.id===userId)? [UpdateCommentButton , DeleteCommentButton]:null}
                     />
                     <CardContent>
                         <div>
@@ -386,7 +417,11 @@ class ProductPage extends Component {
 
     }
   )
-    this.setState({openOffer: false,})
+    console.log('reset')
+    console.log(this.state)
+    console.log(this.baseState)
+    this.setState(this.baseState)
+
   }
 
   _updateComment = async(linkId) => {
@@ -452,6 +487,36 @@ class ProductPage extends Component {
     }
   )
     this.setState({open: false,})
+  }
+
+
+  _deleteOffer = async(linkId) => {
+    console.log('delete offer')
+    console.log(linkId)
+    const link= linkId
+    console.log(link)
+    await this.props.deleteOfferMutation({
+      variables: {
+        link
+      }
+    }
+  )
+    this.setState({openConfirm: false,})
+  }
+
+
+  _deleteComment = async(linkId) => {
+    console.log('delete comment')
+    console.log(linkId)
+    const link= linkId
+    console.log(link)
+    await this.props.deleteCommentMutation({
+      variables: {
+        link
+      }
+    }
+  )
+    this.setState({openConfirm: false,})
   }
 
   _subscribeToUpdatedLinks= () => {
@@ -564,18 +629,15 @@ class ProductPage extends Component {
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-
-        const offeredLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Offer.node.link.id)
-        const link = subscriptionData.data.Offer.node.link
-
-        const newAllLinks = previous.allLinks.slice()
-        newAllLinks[offeredLinkIndex] = link
-        const result = {
+      const offeredLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Offer.node.link.id)
+      const link = subscriptionData.data.Offer.node.link
+      const newAllLinks = previous.allLinks.slice()
+      newAllLinks[offeredLinkIndex] = link
+      const result = {
           ...previous,
           allLinks: newAllLinks
-        }
-
-        return result
+      }
+      return result
       }
     })
   }
@@ -677,6 +739,9 @@ class ProductPage extends Component {
 
 }
 
+
+
+// Cannot add params in Link (id:$id , isDeleted : false)
 const FIND_LINK_QUERY = gql`
 query FindLink($id: ID!){
   Link(id: $id){
@@ -688,6 +753,7 @@ query FindLink($id: ID!){
     createdAt
     updatedAt
     category
+    isDeleted
     votes{
       id
     }
@@ -699,7 +765,7 @@ query FindLink($id: ID!){
       id
       name
     }
-    offers{
+    offers(filter:{isDeleted:false}){
       id
       amount
       offerdescription
@@ -709,7 +775,7 @@ query FindLink($id: ID!){
       }
       createdAt
       updatedAt
-      comments{
+      comments(filter:{isDeleted:false}){
         id
         content
         author{
@@ -789,16 +855,37 @@ updateComment(
 
 }
 `
+const DELETE_OFFER_MUTATION = gql`
+mutation updateOfferMutation ($id: ID!){
+  updateOffer(id:$id , isDeleted:true){
+    id
+    amount
+    isDeleted
+    updatedAt
+  }
+}
+`
+
+const DELETE_COMMENT_MUTATION = gql`
+mutation updateOfferMutation ($id: ID!){
+  updateOffer(id:$id , isDeleted:true){
+    id
+    content
+    updatedAt
+  }
+}
+`
 
 const ALL_LINKS_QUERY = gql`
   query AllLinksQuery{
-    allLinks {
+    allLinks (filter:{isDeleted:false}){
       id
       title
       createdAt
       updatedAt
       url
       description
+      isDeleted
       category
       postedBy {
         id
@@ -875,3 +962,4 @@ export default compose(
   graphql(UPDATE_COMMENT_MUTATION, {name: 'updateCommentMutation'}),
   graphql(FIND_LINK_QUERY, {name:'findLinkQuery' , options: (props) =>({variables:{id: props.match.params.id}})})
 ) (ProductPage)
+//https://www.graph.cool/forum/t/filtering-out-data-based-on-whether-relations-exists/215/5

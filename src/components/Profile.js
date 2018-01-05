@@ -8,7 +8,8 @@ import gql from 'graphql-tag'
 //import { Link } from 'react-router-dom'
 
 // Material UI
-import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card'
+//follow this format of importing Card!
+import Card, { CardActions, CardHeader, CardContent} from 'material-ui-next/Card'
 import Avatar from 'material-ui/Avatar';
 //import IconButton from 'material-ui/IconButton';
 //import Img from 'react-image';
@@ -22,6 +23,7 @@ import Button from 'material-ui-next/Button';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import SettingsIcon from 'material-ui-icons/Settings';
 //import LinkList from './LinkList'
 // copy the UI from Link or ProductPage
 class Profile extends Component {
@@ -90,102 +92,44 @@ class Profile extends Component {
     if(localStorage.getItem(GC_USER_ID)===user.id){
               canSelect= true
     }
-
     const actions = [
         <Button
-          label="Cancel"
-          primary={false}
+
+          color='primary='
           onClick={this.handleClose}
-        />,
+        >Cancel</Button>,
         <Button
-          label="Submit"
-          primary={true}
+
+          color='primary'
           onClick={() => this._updateUser()}
-        />,
+        >Submit</Button>,
       ]
 
       return (
         <div>
         <div>
-        <Tabs>
-          <Tab label='Profile'>
           <div >
             <Card>
               <CardHeader
                 title={user.name}
-                subtitle={user.position|| "No position or job description yet"}
+                subheader={user.position|| "No position or job description yet"}
                 avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
               />
-              <CardTitle  />
-              <CardText>
-                <div>{user.about || "No description yet"}</div>
-                <br/>
-                <div> Email : {user.email} </div>
-                <div>Education : {user.education|| "N/A"}</div>
-                <div> No.Of Products Submitted : {user.links.length||"N/A"} </div>
-                <div> No. Of Offers Created : {user.offers.length||"N/A"} </div>
-                <Button raised primary={true} label="Edit Profile" onClick={this.handleOpen} />
 
-                <Dialog
-                  title="Edit Submision"
-                  actions={actions}
-                  modal={false}
-                  open={this.state.open}
-                  autoScrollBodyContent={true}
-                >
-
-                <TextField
-                  floatingLabelText="Name"
-                  defaultValue={user.name}
-                  fullWidth={true}
-                  onChange={(e) => this.setState({ newName: e.target.value })}
-                />
-
-                <TextField
-                  floatingLabelText="Email"
-                  defaultValue={user.email}
-                  fullWidth={true}
-                  onChange={(e) => this.setState({ newEmail: e.target.value })}
-                />
-
-                <TextField
-                  floatingLabelText="Job Description or Position"
-                  defaultValue={user.position}
-                  fullWidth={true}
-                  onChange={(e) => this.setState({ newPosition: e.target.value })}
-                />
-
-                <TextField
-                  floatingLabelText="About"
-                  multiLine={true}
-                  rows={2}
-                  rowsMax={4}
-                  defaultValue={user.about}
-                  onChange={(e) => this.setState({ newAbout: e.target.value })}
-                />
-
-                <TextField
-                  floatingLabelText="Education"
-                  fullWidth={true}
-                  defaultValue={user.education}
-                  onChange={(e) => this.setState({ newEducation: e.target.value })}
-                />
-
-                </Dialog>
-              </CardText>
+              <CardHeader  />
+              <CardContent>
+                hey
+              </CardContent>
               <CardActions>
                 <label> Follow On: </label>
-                <a href="https://www.graph.cool/docs/reference/graphql-api/mutation-api-ol0yuoz6go/#updating-a-node"><Button label="LinkedIn"> </Button></a>
-                <a> <Button label="Medium" /> </a>
-                <a> <Button label="Twitter" /> </a>
-                <a> <Button label="Github" /> </a>
+                <a href="https://www.graph.cool/docs/reference/graphql-api/mutation-api-ol0yuoz6go/#updating-a-node"><Button> LinkedIn </Button></a>
+                <a> <Button >Medium </Button> </a>
+                <a> <Button >Twitter </Button> </a>
+                <a> <Button >Github </Button> </a>
               </CardActions>
             </Card>
           </div>
-          </Tab>
 
-
-        </Tabs>
         </div>
         </div>
       )

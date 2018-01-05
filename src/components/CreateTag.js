@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
 // Material UI
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui-next/TextField';
 //import Button from 'material-ui/Button';
 import Button from 'material-ui-next/Button';
 class CreateTag extends Component {
@@ -14,18 +14,20 @@ class CreateTag extends Component {
   render() {
     return (
       <div>
-        <div className='flex flex-column mt3'>
+        <div className='flex flex-column mt3  '>
           <TextField
             placeholder="Title for Tag"
+            fullwidth={false}
             value = {this.state.name}
             onChange={(e) => this.setState({ name: e.target.value })}
-          /><br/>
+          ></TextField>
+          <br/>
 
 
         </div>
 
 
-        <Button raised color='primary' onClick={() => this._createTag ()}> "Submit "</Button >
+        <Button raised color='primary' onClick={() => this._createTag ()}> Submit </Button >
       </div>
     )
   }

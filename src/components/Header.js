@@ -12,7 +12,7 @@ import IconButton from 'material-ui/IconButton';
 //import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 //import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 // v1.0
-import Menu, { MenuItem } from 'material-ui/Menu';
+import Menu, { MenuItem } from 'material-ui-next/Menu';
 import SvgIcon from 'material-ui/SvgIcon';
 //import FlatButton from 'material-ui/FlatButton';
 //import Toggle from 'material-ui/Toggle';
@@ -20,14 +20,55 @@ import SvgIcon from 'material-ui/SvgIcon';
 //import NavigationClose from 'material-ui/svg-icons/navigation/close';
 //import BalanceIcon from 'material-ui/svg-icons/action/account-balance';
 
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
+import AppBar from 'material-ui-next/AppBar';
+
 import Typography from 'material-ui-next/Typography';
-import {withStyles} from 'material-ui/styles';  
+import {withStyles} from 'material-ui/styles';
 import AccountCircle from 'material-ui-icons/AccountCircle';
 import MenuIcon from 'material-ui-icons/Menu';
+import MoreVertIcon from 'material-ui-icons/MoreVert'
 import Button from 'material-ui-next/Button';
+import Toolbar from 'material-ui-next/Toolbar';
+
+const styles = {
+  root: {
+    width: '100%',
+  },
+  flex: {
+    flex: 1,
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20,
+  },
+};
 class Header extends Component {
+  state={
+    anchorEl: null,
+    open: false,
+    openLogin: false,
+  };
+
+  handleClick = event => {
+    this.setState({ open: true, anchorEl: event.currentTarget });
+  };
+  handleClickLogin = event => {
+    this.setState({ openLogin: true, anchorEl: event.currentTarget });
+  };
+  handleCloseLogin = () => {
+    this.setState({ openLogin: false });
+  };
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  handleMenu = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  }
+
+  handleCloseMenu = () => {
+    this.setState({ anchorEl: null });
+  };
   render() {
     const userId = localStorage.getItem(GC_USER_ID)
     const PageMenu = (
@@ -93,17 +134,86 @@ class Header extends Component {
         },
       };
 
+
+
+    const anchorEl=this.state;
+    const open = Boolean(anchorEl);
     return (
-      <div >
+      <div className={styles.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton  color="contrast" aria-label="Menu">
-            <MenuIcon />
+          <IconButton  styles = {styles.menuButton} color="contrast" aria-label="Menu">
+            <MenuIcon
+            onClick={this.handleClick}
+            />
           </IconButton>
+          <Menu
+            id="my-menu"
+            anchorEl={this.state.anchorEl}
+            open={this.state.open}
+            onClose={this.state.handleClose}
+          >
+          <MenuItem onClick={this.handleClose} component={Link} to="/" > new </MenuItem>
+          <MenuItem onClick={this.handleClose} component={Link} to="/top" > top </MenuItem>
+          <MenuItem onClick={this.handleClose} component={Link} to="/search">search</MenuItem>
+
+          {userId &&
+          <div>
+          <MenuItem onClick={this.handleClose} component={Link} to="/createcategory"> create category </MenuItem>
+          <MenuItem onClick={this.handleClose} component={Link} to="/createtag"> create tag </MenuItem>
+          <MenuItem onClick={this.handleClose} component={Link} to="/create">submit product</MenuItem>
+          </div>
+          }
+          </Menu>
           <Typography type="title" color="inherit">
-            Title
+            AI Market
           </Typography>
-          <Button color="contrast">Login</Button>
+
+          <IconButton  styles = {styles.menuButton} color="contrast" aria-label="Menu">
+            <MoreVertIcon
+            onClick={this.handleClickLogin}
+            />
+          </IconButton>
+          <Menu
+            id="login-menu"
+            anchorEl={this.state.anchorEl}
+            open={this.state.openLogin}
+            onClose={this.state.handleCloseLogin}
+          >
+          {userId &&
+          <div>
+          <MenuItem onClick={this.handleCloseLogin} component={Link} to={"/profile/"+userId}>Profile</MenuItem>
+          <MenuItem onClick={this.handleCloseLogin} component={Link} to={"/submissionpage/"+userId}>My Submissions</MenuItem>
+          </div>
+          }
+
+          {userId ?
+            <div onClick={() => {
+              localStorage.removeItem(GC_USER_ID)
+              localStorage.removeItem(GC_AUTH_TOKEN)
+              this.props.history.push(`/new/1`)
+            }}>
+                <MenuItem onClick={this.handleCloseLogin}>Logout</MenuItem>
+            </div>
+            :
+                <div>
+              <MenuItem onClick={this.handleCloseLogin} component={Link} to="/login">Login</MenuItem>
+              </div>
+          }
+          </Menu>
+
+          {userId &&
+          <div>
+          <Menu
+            id="login-menu"
+            anchorEl={this.state.anchorEl}
+            open={this.state.openMenu}
+            onClose={this.state.handleCloseMenu}
+          >
+          <MenuItem onClick={this.handleClose} component={Link} to="/" > login </MenuItem>
+          </Menu>
+          </div>
+          }
         </Toolbar>
       </AppBar>
     </div>

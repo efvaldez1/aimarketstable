@@ -8,7 +8,7 @@ import { GC_USER_ID } from '../constants'
 
 // Material UI
 import Snackbar from 'material-ui/Snackbar';
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui-next/TextField';
 //import Button from 'material-ui/Button';
 //v1
 import Button from 'material-ui-next/Button';
@@ -24,11 +24,7 @@ import Button from 'material-ui-next/Button';
 //  onChange={(e) => this.setState({ offerdescription: e.target.value })}
 ///>
 
-
-
-
 class CreateComment extends Component {
-
   state = {
     content: '',
     open:false,
@@ -44,22 +40,19 @@ class CreateComment extends Component {
     console.log("comment section")
     console.log(this.props)
     return (
-      <div>
-        <div>
+      <div className='flex flex-column'>
 
           <TextField
             hintText="Enter Comment"
-            multiLine={true}
-            rows={2}
-            rowsMax={5}
+            multiLine
+            rows="4"
+            fullwidth
             value={this.state.content}
             onChange={(e) => this.setState({ content: e.target.value })}
-          />
+          ></TextField>
+          <br/>
 
-        </div>
-        <div>
           <Button raised color='primary'  onClick={() => this._createComment()}> Submit Comment  </Button>
-        </div>
 
         <Snackbar
           open={this.state.open}
@@ -72,7 +65,6 @@ class CreateComment extends Component {
   }
 
   _createComment = async () => {
-
   const authorId = localStorage.getItem(GC_USER_ID)
   const { content } = this.state
   const offerId= this.props.offerId
@@ -87,11 +79,8 @@ class CreateComment extends Component {
       authorId
     }
   })
-
   this.setState({open: true,})
-
 }
-
 
 }
 
@@ -101,9 +90,11 @@ mutation CreateCommentMutation($content:String!,$authorId:ID!,$offerId:ID!){
     content:$content
     authorId: $authorId
     offerId:$offerId
+    isDeleted:false
   ){
     id
     content
+    isDeleted
     author
     {
       id

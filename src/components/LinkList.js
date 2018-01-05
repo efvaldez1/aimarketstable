@@ -229,58 +229,65 @@ class LinkList extends Component {
     console.log("DELETE LINKS SUBS")
     this.props.allLinksQuery.subscribeToMore({
       document: gql`
-        subscription {
-          Link(filter: {
-            mutation_in: [DELETED]
-          }) {
-            node {
+      subscription {
+        Link(filter: {
+          mutation_in: [UPDATED]
+          updatedFields_contains_some: ["isDeleted"]
+        }) {
+          node {
+            id
+            title
+            url
+            description
+            category
+            createdAt
+            updatedAt
+            isDeleted
+            tags{
               id
-              title
-              url
-              description
-              category
-              createdAt
-              updatedAt
-              tags{
+              name
+            }
+            postedBy {
+              id
+              name
+            }
+            offers{
+              id
+              amount
+              offerdescription
+              offerBy{
                 id
                 name
-              }
-              postedBy {
-                id
-                name
-              }
-              offers{
-                id
-                amount
-                offerdescription
-                offerBy{
-                  id
-                  name
-                }
-              }
-              votes {
-                id
-                user {
-                  id
-                }
+                position
               }
             }
-            mutation
-            previousValues{
-              title
-              description
-              url
-              category
+            votes {
+              id
+              user {
+                id
+              }
             }
           }
+          updatedFields
+          previousValues{
+            title
+            description
+            url
+            category
+          }
         }
+      }
       `,
       updateQuery: (previous, { subscriptionData }) => {
 
         const updatedLinkIndex = previous.allLinks.findIndex(link => link.id === subscriptionData.data.Link.node.id)
         const link = subscriptionData.data.Link.node
         const newAllLinks = previous.allLinks.slice()
-        newAllLinks[updatedLinkIndex] = link
+        console.log("after del")
+        //newAllLinks[updatedLinkIndex] = link
+        newAllLinks.splice(updatedLinkIndex,1)
+        console.log(link)
+        console.log(newAllLinks)
         const result = {
           ...previous,
           allLinks: newAllLinks
@@ -297,6 +304,7 @@ class LinkList extends Component {
       document: gql`
         subscription {
           Vote(filter: {
+
               mutation_in: [CREATED, UPDATED, DELETED]
           }) {
             node {
@@ -344,7 +352,7 @@ class LinkList extends Component {
 
 export const ALL_LINKS_QUERY = gql`
   query AllLinksQuery($first: Int, $skip: Int, $orderBy: LinkOrderBy) {
-    allLinks(first: $first, skip: $skip, orderBy: $orderBy) {
+    allLinks(first: $first, skip: $skip, orderBy: $orderBy , filter:{isDeleted:false}) {
       id
       title
       updatedAt
@@ -377,7 +385,7 @@ export const ALL_LINKS_QUERY = gql`
         id
         name
       }
-
+      isDeleted
 
     }
     _allLinksMeta {

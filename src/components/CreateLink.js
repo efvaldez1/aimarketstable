@@ -9,7 +9,7 @@ import CategoryList from './CategoryList'
 
 
 //Material UI
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui-next/TextField';
 //import Select from 'material-ui/Select';
 //import MenuItem from 'material-ui/MenuItem';
 //v 1.0
@@ -30,7 +30,6 @@ class CreateLink extends Component {
   constructor() {
     super();
     this.handleSelect = this.handleSelect.bind(this);
-
     this.handleMultiSelect = this.handleMultiSelect.bind(this);
   }
 
@@ -42,8 +41,6 @@ class CreateLink extends Component {
     console.log('selected!')
     console.log(event.target.value)
     this.setState({values:event.target.value })
-
-
   }
 
   state = {
@@ -85,34 +82,35 @@ class CreateLink extends Component {
 
     return (
       <div >
-        <div className='flex flex-column mt3'>
+        <div className='flex flex-column'>
         <TextField
-          key="title"
-          hintText="Enter Title"
+
+          placeholder="Enter Title"
+
+
           value={this.state.title}
           onChange={(e) => this.setState({ title: e.target.value })}
-        /><br />
-
+        ></TextField>
+        <br/>
         <TextField
-          key="description"
-          hintText="Enter Description"
+
+          placeholder="Enter Description"
           multiLine={true}
           rows={1}
           rowsMax={15}
           value={this.state.description}
           onChange={(e) => this.setState({ description: e.target.value })}
-        /><br />
+        ></TextField>
+        <br/>
 
         <TextField
-          key="url"
-          hintText="Enter URL"
+          placeholder="Enter URL"
           value={this.state.url}
           onChange={(e) => this.setState({ url: e.target.value })}
-        /><br />
+        ></TextField>
+        <br />
 
-        <label> Category : </label>
-
-        <CategoryList ref="categorySelector" name="myCategoryList" onChange={this.selectCategory.bind(this)} />
+        <CategoryList ref="categorySelector" value={this.state.category} name="myCategoryList" onChange={this.selectCategory.bind(this)}  />
 
 
       <InputLabel htmlFor="name-multiple">Choose Tag/s</InputLabel>
@@ -136,7 +134,7 @@ class CreateLink extends Component {
       }
     </Select>
         </div>
-        <Button onClick={() => this._createLink ()} label="Submit" primary={true} style={style} />
+        <Button raised onClick={() => this._createLink ()}  color='primary' style={style}>Submit</Button>
       </div>
     )
   }
@@ -149,12 +147,13 @@ class CreateLink extends Component {
     console.log(this.state.url)
     console.log(this.state.category)
     console.log(this.state.values)
+
     const postedById = localStorage.getItem(GC_USER_ID)
     if (!postedById) {
       console.error('No user logged in')
       return
     }
-
+    console.log(postedById)
     const { title,description, url,category,values } = this.state
     console.log(this.state.values)
       await this.props.createLinkMutation({
@@ -201,6 +200,7 @@ const CREATE_LINK_MUTATION = gql`
             category:$category,
             postedById: $postedById,
             tagsIds: $values
+            isDeleted:false
         ) {
             id
             title
