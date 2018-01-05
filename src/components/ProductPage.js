@@ -63,6 +63,9 @@ class ProductPage extends Component {
   }
 
   resetState = () => {
+    console.log('reset state!')
+    console.log(this.state)
+    console.log(this.baseState)
     this.setState(this.baseState)
   }
 
@@ -121,9 +124,9 @@ class ProductPage extends Component {
     }
     //const id = this.props.match.params.id
     const link = this.props.findLinkQuery.Link
-    console.log("Ids of users")
-
+    console.log("Ids of user")
     const userId = localStorage.getItem(GC_USER_ID)
+    console.log("Id of author of product")
     console.log(this.props.findLinkQuery.Link.postedBy.id)
     console.log(userId)
     let  EditButton=null
@@ -250,9 +253,7 @@ class ProductPage extends Component {
       <label><strong>Offers :</strong></label>
       {link.offers.map((offerItem)=>(
         <div key={offerItem.id}>
-
         <Dialog
-          key={offerItem.id}
           title="Edit Offer"
           actions={
             [
@@ -260,10 +261,8 @@ class ProductPage extends Component {
                 color='primary'
                 onClick={() =>
                   {
-                    this.setState({openOffer:false})
                     this.resetState()
                   }
-
               }
               >Cancel</Button>,
               <Button raised
@@ -402,7 +401,7 @@ class ProductPage extends Component {
 
   _updateOffer = async(linkId) => {
     // study further component Life Cycle for prop changes
-    console.log('update offer')
+    console.log('update offer!')
     const link= linkId
     const {newAmount, newOfferDescription} = this.state
     console.log(link)
@@ -486,7 +485,7 @@ class ProductPage extends Component {
       }
     }
   )
-    this.setState({open: false,})
+    this.resetState()
   }
 
 

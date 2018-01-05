@@ -84,18 +84,14 @@ class CreateLink extends Component {
       <div >
         <div className='flex flex-column'>
         <TextField
-
           placeholder="Enter Title"
-
-
           value={this.state.title}
           onChange={(e) => this.setState({ title: e.target.value })}
         ></TextField>
         <br/>
         <TextField
-
-          placeholder="Enter Description"
-          multiLine={true}
+          multiline
+          placeholder="Enter Description"          
           rows={1}
           rowsMax={15}
           value={this.state.description}

@@ -45,7 +45,7 @@ class CategoryList extends Component {
           {categoryToRender.map((category)=>
               (
 
-                <MenuItem value={category.name}>{category.name}</MenuItem>
+                <MenuItem key={category.id} value={category.name}>{category.name}</MenuItem>
               )
             )
           }

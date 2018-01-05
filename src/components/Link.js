@@ -74,11 +74,7 @@ handleRequestClose = () => {
       <Card>
       <CardHeader
         title={<Link to={'/profile/'+this.props.link.postedBy.id} > {this.props.link.postedBy.name ? this.props.link.postedBy.name : 'Unknown'}</Link>}
-        action={
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
-          }
+        
         subheader={this.props.link.postedBy.position ? this.props.link.postedBy.position : "No job description yet"}
         avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
       >
