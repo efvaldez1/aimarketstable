@@ -73,8 +73,6 @@ class Profile extends Component {
     const userId = this.props.match.params.id
     //const userId = localStorage.getItem(GC_USER_ID)
     console.log(userId)
-
-
     if (this.props.findUserQuery && this.props.findUserQuery.loading) {
           return  <div><CircularProgress size={90} thickness={7}/></div>
         }
@@ -94,12 +92,10 @@ class Profile extends Component {
     }
     const actions = [
         <Button
-
           color='primary='
           onClick={this.handleClose}
         >Cancel</Button>,
         <Button
-
           color='primary'
           onClick={() => this._updateUser()}
         >Submit</Button>,
@@ -125,7 +121,7 @@ class Profile extends Component {
 
               </CardContent>
               <CardActions>
-                
+
                 <label> Follow On: </label>
                 <a href="https://www.graph.cool/docs/reference/graphql-api/mutation-api-ol0yuoz6go/#updating-a-node"><Button> LinkedIn </Button></a>
                 <a> <Button >Medium </Button> </a>

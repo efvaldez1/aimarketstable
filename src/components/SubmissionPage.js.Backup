@@ -51,12 +51,11 @@ class SubmissionPage extends Component {
       newAuthor:'',
       showCheckboxes: false,
       selectedProducts:[],
-      openEdit:false,
+      open:false,
       openConfirm:false,
       link:'',
     }
     this.baseState = this.state
-
   }
 
 
@@ -71,19 +70,19 @@ class SubmissionPage extends Component {
     this.setState(this.baseState)
     console.log(this.state)
   }
-  handleEdit = (link) => {
-    console.log('link to edit')
-    console.log(link)
-    this.setState({link:link})
-    this.setState({openEdit: true});
+  handleOpen = (linkId) => {
+    console.log('open')
+    console.log(linkId)
+    this.setState({link:linkId})
+    this.setState({open: true});
   };
   handleCloseConfirm = () => {
 
     this.setState({openConfirm: false});
   };
-  handleEditClose = (linkId) => {
+  handleClose = (linkId) => {
 
-    this.setState({openEdit: false});
+    this.setState({open: false});
   };
 
   handleConfirm = (link) => {
@@ -156,7 +155,7 @@ class SubmissionPage extends Component {
     const actions = [
         <Button
           color='primary'
-          onClick={this.handleEditClose}
+          onClick={this.handleClose}
         >Cancel</Button>,
         <Button
           color='primary'
@@ -172,7 +171,7 @@ class SubmissionPage extends Component {
             <Card key={link.id}>
             <CardContent>
             <div><strong>ID: {link.id}</strong> </div>
-            <div><strong>isDeleted: {link.isDeleted||"N/A"} </strong> </div>
+            <div><strong>isDeleted: {link.isDeleted}</strong> </div>
             <div><strong>Title: </strong> <Link to={'/product/'+link.id} > {link.title}</Link></div>
             <div><strong> Description:</strong> {link.description} </div>
             <div> <strong> URL: </strong> <a href={link.url}>{link.url}</a></div>
@@ -202,7 +201,7 @@ class SubmissionPage extends Component {
             <CardActions>
             { canSelect &&
               <div>
-              <Button raised  onClick={() => {this.handleEdit(link)}}> Edit Submission<EditIcon></EditIcon> </Button>
+              <Button raised  onClick={this.handleOpen} > Edit Submission<EditIcon></EditIcon> </Button>
               <Button raised color='primary' onClick={() => {this.handleConfirm(link)}}>Delete!</Button>
               </div>
             }
@@ -211,59 +210,6 @@ class SubmissionPage extends Component {
           )
         )
         }
-        <Dialog
-          title="Edit Submision"
-          actions={
-            [<Button
-            raised
-
-              onClick={this.handleEditClose}
-            >Cancel</Button>,
-            <Button
-            raised
-              color='primary'
-              onClick={() => this._updateLink(this.state.link.id)}
-            >Submit</Button>]
-          }
-          modal={false}
-          open={this.state.openEdit}
-          autoScrollBodyContent={true}
-        >
-        <div>
-
-        <TextField
-          label="Title"
-          defaultValue={this.state.link.title}
-          fullWidth
-          onChange={(e) => this.setState({ newTitle: e.target.value })}
-        />
-
-        <TextField
-          label="Description"
-          defaultValue={this.state.link.description}
-          fullWidth
-          multiLine={true}
-          rows={2}
-          rowsMax={4}
-          onChange={(e) => this.setState({ newDescription: e.target.value })}
-        />
-
-        <TextField
-          label="URL"
-          fullWidth
-          defaultValue={this.state.link.url}
-          onChange={(e) => this.setState({ newURL: e.target.value })}
-        />
-
-        <TextField
-          label="Category"
-          fullWidth
-          defaultValue={this.state.link.category}
-          onChange={(e) => this.setState({ newCategory: e.target.value })}
-        />
-
-        </div>
-        </Dialog>
 
         <Dialog
               actions={[
@@ -291,6 +237,7 @@ class SubmissionPage extends Component {
   _deleteSubmissions = async(linkId) => {
     // study further component Life Cycle for prop changes
     console.log('del')
+
     const link= linkId
     console.log(link)
     await this.props.deleteLinkMutation({
@@ -301,7 +248,6 @@ class SubmissionPage extends Component {
     }
   )
     this.setState({openConfirm: false,})
-    window.location.reload();
   }
 
   _subscribeToUpdatedLinks = () => {
@@ -309,7 +255,7 @@ class SubmissionPage extends Component {
     this.props.findUserQuery.subscribeToMore({
       document: gql`
         subscription {
-          User(id: $id, filter: {
+          User(filter: {
             mutation_in: [UPDATED]
 
           }) {
@@ -353,9 +299,7 @@ class SubmissionPage extends Component {
             previousValues{
               name
               email
-              links{
-                isDeleted
-              }
+
             }
           }
         }
@@ -390,22 +334,22 @@ class SubmissionPage extends Component {
     var newURL = ''
     var newCategory = ''
     if(this.state.newTitle===''){
-      newTitle=this.state.link.title
+      newTitle=this.link.title
     }else{
       newTitle=this.state.newTitle
     }
     if(this.state.newDescription===''){
-      newDescription=this.state.link.description
+      newDescription=this.link.description
     }else{
       newDescription=this.state.newDescription
     }
     if(this.state.newURL===''){
-      newURL=this.state.link.url
+      newURL=this.link.url
     }else{
       newURL= this.state.newURL
     }
     if(this.state.newCategory===''){
-      newCategory=this.state.link.category
+      newCategory=this.link.category
     }else{
       newCategory=this.state.newCategory
     }
@@ -425,7 +369,6 @@ class SubmissionPage extends Component {
     }
   )
     this.setState({open: false,})
-    this.handleReset()
   }
 
 }
@@ -473,26 +416,39 @@ query FindUserQuery($userId: ID) {
 }
 `
 
-
-const UPDATE_LINK_MUTATION = gql`
-mutation updateLinkMutation($linkId:ID! , $newTitle:String! , $newDescription:String! , $newURL: String! , $newCategory:String!){
-updateLink(
-  id:$linkId
-  title:$newTitle
-  description:$newDescription
-  url:$newURL
-  category:$newCategory
-)
-  {
+const UPDATE_LINK_QUERY = gql`
+mutation UpdateLinkQuery($id:ID! $newTitle:String! $newDescription:String! $newUrl:String!){
+  updateLink(
+    id:$id
+    title: $newTitle
+    description:$newDescription
+    url: $newUrl
+  ){
     id
     title
     description
     url
     category
+    createdAt
+    isDeleted
     updatedAt
+    postedBy{
+      id
+      name
+    }
+    votes{
+      id
+    }
+    offers{
+      id
+    }
+    tags{
+      id
+      name
+    }
   }
-
-}`
+}
+`
 
 const DELETE_LINK_MUTATION = gql`
 mutation updateLinkMutation ($link: ID!){
@@ -509,5 +465,4 @@ mutation updateLinkMutation ($link: ID!){
 export default compose(
   graphql(FIND_USER_QUERY, { name: 'findUserQuery' , options: (props) =>({variables:{userId: props.match.params.id}})} ),
   graphql(DELETE_LINK_MUTATION, {name:'deleteLinkMutation'}),
-  graphql(UPDATE_LINK_MUTATION, {name: 'updateLinkMutation'}),
 )(SubmissionPage)

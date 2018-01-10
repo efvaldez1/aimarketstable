@@ -302,7 +302,6 @@ class ProductPage extends Component {
             action={(offerItem.offerBy.id===userId)? [UpdateOfferButton , DeleteOfferButton]:null}
           />
           <CardContent>
-
               <div>
               <div>Amount: {offerItem.amount}</div>
               <a>Description: {offerItem.offerdescription}</a><br/>

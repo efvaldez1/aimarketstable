@@ -113,10 +113,7 @@ class CreateLink extends Component {
           onChange={(e) => this.setState({ url: e.target.value })}
         ></TextField>
         <br />
-
         <CategoryList ref="categorySelector" value={this.state.category} name="myCategoryList" onChange={this.selectCategory.bind(this)}  />
-
-
       <InputLabel htmlFor="name-multiple">Choose Tag/s</InputLabel>
       <Select
       multiple
@@ -124,11 +121,9 @@ class CreateLink extends Component {
       input={<Input id="name-multiple" />}
       onChange={this.handleMultiSelect}
       >
-
       {tagToRender.map((tagItem)=>
         (
           <MenuItem
-
             value={tagItem.id}
           >
             {tagItem.name}
@@ -149,19 +144,15 @@ class CreateLink extends Component {
     )
   }
 
-
   _createLink = async () => {
     console.log('create link')
-
     console.log(this.state.title)
     console.log(this.state.description)
     console.log(this.state.url)
     console.log(this.state.category)
     console.log(this.state.values)
-
     const postedById = localStorage.getItem(GC_USER_ID)
     if (!postedById) {
-
       console.error('No user logged in')
       this.setState({open:true})
       return
