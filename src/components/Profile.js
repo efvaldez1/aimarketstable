@@ -20,12 +20,60 @@ import { CircularProgress } from 'material-ui-next/Progress';
 // import Button raised from 'material-ui/Button raised';
 // v 1.0
 import Button from 'material-ui-next/Button';
-import TextField from 'material-ui/TextField';
-import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui-next/TextField';
+import Dialog, {DialogActions,DialogContent,DialogContentText,DialogTitle,} from 'material-ui-next/Dialog';
+
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SettingsIcon from 'material-ui-icons/Settings';
 //import LinkList from './LinkList'
 // copy the UI from Link or ProductPage
+
+//icons
+import FaGithub from 'react-icons/lib/fa/github'
+import FaLinkedinSquare from'react-icons/lib/fa/linkedin-square'
+import FaMedium from 'react-icons/lib/fa/medium'
+import FaTwitterSquare from 'react-icons/lib/fa/twitter-square'
+import { Link } from 'react-router-dom'
+import EditIcon from 'material-ui-icons/Edit';
+
+const styles = {
+  chip: {
+    margin: 14,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  header:{
+    textAlign:'center',
+    fontSize:20,
+    fontWeight:'bold',
+  },
+  paragraph: {
+    margin:5,
+    textIndent:30,
+    fontStyle: 'italic',
+    paddingLeft: 30,
+    textAlign: 'justify',
+  },
+  button: {
+    margin: 5,
+
+  },
+}
+
+const styles2 = theme => ({
+
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
+});
+
+
+
 class Profile extends Component {
   state = {
     newName:'',
@@ -46,6 +94,7 @@ class Profile extends Component {
   }
 
   handleOpen = () => {
+    console.log('open')
     this.setState({open: true});
   };
 
@@ -71,6 +120,10 @@ class Profile extends Component {
   render() {
     // get ID from url params
     const userId = this.props.match.params.id
+    var canSelect=false
+    if(localStorage.getItem(GC_USER_ID)===userId){
+              canSelect= true
+    }
     //const userId = localStorage.getItem(GC_USER_ID)
     console.log(userId)
     if (this.props.findUserQuery && this.props.findUserQuery.loading) {
@@ -113,22 +166,108 @@ class Profile extends Component {
               />
 
               <CardHeader  />
+
               <CardContent>
-                <div>{user.about||"No description about self yet"}</div>
+                <div style={styles.paragraph}>{user.about||"No description about self yet" }</div>
                 <br/>
                 <div><strong>Education : </strong> {user.education||"N/A"}</div>
-                <div><strong> Number of Submissions: </strong> {user.links.length|| '0' }</div>
+                <div><strong>Joined : </strong> {user.createdAt.slice(0,10)||"N/A"}</div>
 
+                <div><strong> Number of Submissions: </strong> {user.links.length|| '0' }</div>
+                { canSelect &&
+                  <Button raised color='default' onClick={()=> this.handleOpen()} > Update <EditIcon></EditIcon> </Button>
+                }
+                <Button raised color='primary' component={Link} to={'/submissionpage/'+user.id} > View Submissions  </Button>
               </CardContent>
               <CardActions>
-
-                <label> Follow On: </label>
-                <a href="https://www.graph.cool/docs/reference/graphql-api/mutation-api-ol0yuoz6go/#updating-a-node"><Button> LinkedIn </Button></a>
-                <a> <Button >Medium </Button> </a>
-                <a> <Button >Twitter </Button> </a>
-                <a> <Button >Github </Button> </a>
+               {user.linkedin? <Button style={styles.button }component={Link} to={user.linkedin} > <FaLinkedinSquare styles={styles.rightIcon}/></Button> : <Button style={styles.button } disabled> <FaLinkedinSquare styles={styles.rightIcon}/></Button> }
+               {user.medium? <Button style={styles.button } component={Link} to={user.medium}><FaMedium/> </Button> :  <Button style={styles.button } disabled><FaMedium/> </Button> }
+               {user.twitter? <Button style={styles.button } component={Link} to={user.twitter}><FaTwitterSquare/> </Button> : <Button style={styles.button } disabled><FaTwitterSquare/> </Button> }
+               {user.github? <Button style={styles.button } component={Link} to={user.github}><FaGithub/> </Button> : <Button style={styles.button } disabled><FaGithub/> </Button> }
               </CardActions>
             </Card>
+
+            <Dialog
+
+              onClose={this.handleClose}
+              open={this.state.open}
+            >
+            <DialogTitle>{"Update Profile"}</DialogTitle>
+
+            <DialogContent>
+            <TextField
+              label="Name"
+              defaultValue={user.name}
+              fullWidth
+              onChange={(e) => this.setState({ newName: e.target.value })}
+            />
+
+            <TextField
+              label="Title / Position"
+              defaultValue={user.position? user.position : "Enter your title / position"}
+              fullWidth
+              onChange={(e) => this.setState({ newPosition: e.target.value })}
+            />
+
+            <TextField
+              label="Description"
+              defaultValue={user.about? user.about: "Describe yourself"}
+              fullWidth
+              multiline
+              rows="2"
+              rowsMax="4"
+              onChange={(e) => this.setState({ newAbout: e.target.value })}
+            />
+
+            <TextField
+              label="Education"
+              fullWidth
+              defaultValue={user.education? user.education: "Educational Information"}
+              onChange={(e) => this.setState({ newEducation: e.target.value })}
+            />
+
+            <TextField
+              label="LinkedIn (Optional)"
+              fullWidth
+              defaultValue={user.linkedin? user.linkedin: "LinkedIn Profile" }
+              onChange={(e) => this.setState({ newLinkedin: e.target.value })}
+            />
+
+            <TextField
+              label="Twitter (Optional)"
+              fullWidth
+              defaultValue={user.twitter? user.twitter: "Twitter Profile"}
+              onChange={(e) => this.setState({ newTwitter: e.target.value })}
+            />
+
+            <TextField
+              label="Github (Optional)"
+              fullWidth
+              defaultValue={user.github? user.github: "Github Profile"}
+              onChange={(e) => this.setState({ newGihub: e.target.value })}
+            />
+
+            <TextField
+              label="Medium (Optional)"
+              fullWidth
+              defaultValue={user.medium? user.medium: "Medium Profile"}
+              onChange={(e) => this.setState({ newMedium: e.target.value })}
+            />
+
+            </DialogContent>
+            <DialogActions>
+                <Button
+                  raised
+                  color='default'
+                  onClick={this.handleClose}
+                >Cancel</Button>,
+                <Button
+                  raised
+                  color='primary'
+                  onClick={() => this._updateUser()}
+                >Submit</Button>
+            </DialogActions>
+            </Dialog>
           </div>
 
         </div>
@@ -224,6 +363,10 @@ const FIND_USER_QUERY = gql`
       about
       education
       position
+      linkedin
+      twitter
+      github
+      medium
       offers{
         id
         amount

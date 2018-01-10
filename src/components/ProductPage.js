@@ -32,10 +32,38 @@ import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import DeleteIcon from 'material-ui-icons/Delete';
 import SettingsIcon from 'material-ui-icons/Settings';
 import EditIcon from 'material-ui-icons/Edit';
-import Chip from 'material-ui/Chip';
+import Chip from 'material-ui-next/Chip';
 import { Link } from 'react-router-dom';
 import Snackbar from 'material-ui/Snackbar';
 import Icon from 'material-ui-next/Icon';
+import FaFacebookSquare from 'react-icons/lib/fa/facebook-square'
+import FaGithub from 'react-icons/lib/fa/github'
+import FaLinkedinSquare from'react-icons/lib/fa/linkedin-square'
+import FaMedium from 'react-icons/lib/fa/medium'
+import FaTwitterSquare from 'react-icons/lib/fa/twitter-square'
+import GoMarkGithub from 'react-icons/lib/go/mark-github'
+const styles = {
+  chip: {
+    margin: 14,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  header:{
+    textAlign:'center',
+    fontSize:20,
+    fontWeight:'bold',
+  },
+  paragraph: {
+    margin:20,
+    textIndent:30,
+    fontStyle: 'italic',
+    paddingLeft: 30,
+    textAlign: 'justify',
+  },
+}
+
 class ProductPage extends Component {
   constructor() {
     super();
@@ -149,31 +177,27 @@ class ProductPage extends Component {
       <Card>
       <CardHeader
         title={link.postedBy.name}
-        action={
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
-          }
+  
         subheader={link.postedBy.position ?link.postedBy.position : "No job description yet"}
         avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
       />
       <CardMedia
-            image="http://americanconstruction.net/wp-content/uploads/2015/10/upload-empty.png"
+
             title={link.title}
             >
             <img src="http://americanconstruction.net/wp-content/uploads/2015/10/upload-empty.png" alt="" />
       </CardMedia>
       <CardContent>
-      <div><strong>{link.title}</strong></div>
-      <div>{link.description}</div>
+      <div style={styles.header}>{link.title}</div>
+      <div style={styles.paragraph}>{link.description}</div>
       <br/>
       <div> <strong> URL: </strong><a href={link.url}>{link.url}</a></div>
       <div> <strong> Category: </strong> {link.category || 'None'}</div>
-      <div> <strong> Submitted On: </strong> {link.createdAt} ({timeDifferenceForDate(link.createdAt)}) </div>
-      <div> <strong> Last updated at: </strong> {link.updatedAt} ({timeDifferenceForDate(link.updatedAt)}) </div>
-      <div> <strong> Tags: </strong>
+      <div> <strong> Submitted On: </strong> {link.createdAt.slice(0,10)} ({timeDifferenceForDate(link.createdAt)}) </div>
+      <div> <strong> Last updated at: </strong> {link.updatedAt.slice(0,10)} ({timeDifferenceForDate(link.updatedAt)}) </div>
+      <div style={styles.wrapper}> <strong> Tags: </strong>
           {link.tags.length!==0 ? link.tags.map((tagItem)=>
-          (<a>{tagItem.name} </a>)
+          (<Chip  style={styles.chip} label={tagItem.name}>{tagItem.name} </Chip>)
         ) : 'None'
           }
       </div>
@@ -227,14 +251,19 @@ class ProductPage extends Component {
       <br/>
     </CardContent>
         <CardActions>
-          <label> <strong> Share Via: (Not yet implemented)</strong> </label>
+        <div>
 
-          <Button>Facebook </Button>
-          <Button> Twitter < / Button>
-          <Button> LinkedIn </ Button>
-          <br/>
-          <label>  <strong> Other Links: </strong> </label>
-          <Button>Github</Button>
+        <strong> Share :</strong>
+
+          <Button style={styles.button } href={"https://facebook.com"} > <FaFacebookSquare styles={styles.rightIcon}/></Button>
+          <Button style={styles.button } href={"https://twitter.com"} ><FaTwitterSquare styles={styles.rightIcon}/> </Button>
+          <Button style={styles.button } href={"https://linkedin.com"} > <FaLinkedinSquare styles={styles.rightIcon}/></Button>
+
+        </div>
+        <div>
+          <label>  <strong>  Links: </strong> </label>
+            <Button style={styles.button } href={"https://github.com/IntuitionMachine"} > <GoMarkGithub styles={styles.rightIcon}/></Button>
+        </div>
         </CardActions>
     </Card>
     <div>

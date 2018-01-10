@@ -22,6 +22,7 @@ import TextField from 'material-ui-next/TextField';
 import Dialog from 'material-ui/Dialog';
 import {Tabs, Tab} from 'material-ui-next/Tabs';
 import EditIcon from 'material-ui-icons/Edit';
+import DeleteIcon from 'material-ui-icons/Delete';
 
 // modals
 //import EditProductModal from 'EditProductModal';
@@ -30,13 +31,39 @@ import Chip from 'material-ui/Chip';
 
 const styles = {
   chip: {
-    margin: 4,
+    margin: 14,
   },
   wrapper: {
     display: 'flex',
     flexWrap: 'wrap',
   },
+  header:{
+    textAlign:'center',
+    fontSize:20,
+    fontWeight:'bold',
+  },
+  paragraph: {
+    margin:20,
+    textIndent:30,
+    fontStyle: 'italic',
+    paddingLeft: 30,
+    textAlign: 'justify',
+  },
+  button: {
+    margin: 5,
+
+  },
 }
+
+const styles2 = theme => ({
+
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
+});
 //import LinkList from './LinkList'
 // copy the UI from Link or ProductPage
 class SubmissionPage extends Component {
@@ -171,10 +198,9 @@ class SubmissionPage extends Component {
           (
             <Card key={link.id}>
             <CardContent>
-            <div><strong>ID: {link.id}</strong> </div>
-            <div><strong>isDeleted: {link.isDeleted||"N/A"} </strong> </div>
-            <div><strong>Title: </strong> <Link to={'/product/'+link.id} > {link.title}</Link></div>
-            <div><strong> Description:</strong> {link.description} </div>
+
+            <div style={styles.header}> <Link to={'/product/'+link.id} > {link.title}</Link></div>
+            <div style={styles.paragraph}>{link.description} </div>
             <div> <strong> URL: </strong> <a href={link.url}>{link.url}</a></div>
             <div> <strong> Category: </strong> {link.category}  </div>
             <div> <strong> No. of Tags: </strong> {link.tags.length||"None"}  </div>
@@ -190,7 +216,7 @@ class SubmissionPage extends Component {
                 )
               }
             </div>
-            <div><strong> Submited On:</strong> {link.createdAt} ({timeDifferenceForDate(link.createdAt)})</div>
+            <div><strong> Submited On:</strong> {link.createdAt.slice(0,10)} ({timeDifferenceForDate(link.createdAt)})</div>
             <div><strong> Last Updated:</strong> ({timeDifferenceForDate(link.updatedAt)})</div>
             <br/>
             <div className='f6 lh-copy gray'>  {link.votes.length} votes </div>
@@ -202,8 +228,8 @@ class SubmissionPage extends Component {
             <CardActions>
             { canSelect &&
               <div>
-              <Button raised  onClick={() => {this.handleEdit(link)}}> Edit Submission<EditIcon></EditIcon> </Button>
-              <Button raised color='primary' onClick={() => {this.handleConfirm(link)}}>Delete!</Button>
+              <Button raised  color='default' onClick={() => {this.handleEdit(link)}}> Edit<EditIcon></EditIcon> </Button>
+              <Button raised color='accent' style={{color:'black',margin:10 , background:'red'}} onClick={() => {this.handleConfirm(link)}}>Delete <DeleteIcon></DeleteIcon> </Button>
               </div>
             }
             </CardActions>
@@ -214,10 +240,10 @@ class SubmissionPage extends Component {
         <Dialog
           title="Edit Submision"
           actions={
-            [<Button
+            [
+            <Button
             raised
-
-              onClick={this.handleEditClose}
+            onClick={this.handleEditClose}
             >Cancel</Button>,
             <Button
             raised
@@ -230,7 +256,6 @@ class SubmissionPage extends Component {
           autoScrollBodyContent={true}
         >
         <div>
-
         <TextField
           label="Title"
           defaultValue={this.state.link.title}
@@ -279,7 +304,7 @@ class SubmissionPage extends Component {
               open={this.state.openConfirm}
               onRequestClose={this.confirmClose}
             >
-              Are you sure you want to delete "{this.state.link.title}" with {this.state.link.id}?
+              Are you sure you want to delete "{this.state.link.title}"?
           </Dialog>
 
 

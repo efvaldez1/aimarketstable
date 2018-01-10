@@ -50,14 +50,14 @@ class CreateOffer extends Component {
           placeholder="Enter Amount"
           value={this.state.amount}
           onChange={(e) => this.setState({ amount: e.target.value })}
-        />
+        /><br/>
 
         <TextField
           placeholder="Enter Message"
           value={this.state.offerdescription}
           fullWidth={true}
           onChange={(e) => this.setState({ offerdescription: e.target.value })}
-        />
+        /><br/>
         </div>
 
         <Button raised color='primary' onClick={() => this._createOffer()}>Submit Offer</Button>

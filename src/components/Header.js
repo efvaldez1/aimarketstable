@@ -21,7 +21,7 @@ import SvgIcon from 'material-ui/SvgIcon';
 //import BalanceIcon from 'material-ui/svg-icons/action/account-balance';
 
 import AppBar from 'material-ui-next/AppBar';
-
+import { ListItemIcon, ListItemText } from 'material-ui/List';
 import Typography from 'material-ui-next/Typography';
 import {withStyles} from 'material-ui/styles';
 import AccountCircle from 'material-ui-icons/AccountCircle';
@@ -78,6 +78,7 @@ class Header extends Component {
               <MenuIcon/>
               </IconButton>
           }
+
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
         >
@@ -151,7 +152,7 @@ class Header extends Component {
             id="my-menu"
             anchorEl={this.state.anchorEl}
             open={this.state.open}
-            onClose={this.state.handleClose}
+            onClose={this.handleClose}
           >
           <MenuItem onClick={this.handleClose} component={Link} to="/" > new </MenuItem>
           <MenuItem onClick={this.handleClose} component={Link} to="/top" > top </MenuItem>
@@ -166,7 +167,7 @@ class Header extends Component {
           }
           </Menu>
           <Typography type="title" color="inherit">
-            AI Market
+            Some Cool App
           </Typography>
 
           <IconButton  styles = {styles.menuButton} color="contrast" aria-label="Menu">
@@ -178,7 +179,7 @@ class Header extends Component {
             id="login-menu"
             anchorEl={this.state.anchorEl}
             open={this.state.openLogin}
-            onClose={this.state.handleCloseLogin}
+            onClose={this.handleCloseLogin}
           >
           {userId &&
           <div>
