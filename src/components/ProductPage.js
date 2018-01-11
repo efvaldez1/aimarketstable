@@ -177,7 +177,7 @@ class ProductPage extends Component {
       <Card>
       <CardHeader
         title={link.postedBy.name}
-  
+
         subheader={link.postedBy.position ?link.postedBy.position : "No job description yet"}
         avatar={<Avatar src="http://www.gotknowhow.com/media/avatars/images/default/large-user-avatar.png" />}
       />

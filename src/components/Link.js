@@ -101,7 +101,7 @@ handleRequestCloseVotedAgain = () => {
       </CardHeader>
       <CardContent>
 
-      <div style={styles.header}> {this.props.link.title} </div>
+      <div style={styles.header}>!!! {this.props.link.title} </div>
       <div style={styles.paragraph}> {this.props.link.description} </div>
       <div> <strong> URL: </strong> <a href={this.props.link.url}>{this.props.link.url}</a></div>
       <div> <strong> Category: </strong> {this.props.link.category}  </div>

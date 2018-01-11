@@ -21,7 +21,7 @@ import SvgIcon from 'material-ui/SvgIcon';
 //import BalanceIcon from 'material-ui/svg-icons/action/account-balance';
 
 import AppBar from 'material-ui-next/AppBar';
-import { ListItemIcon, ListItemText } from 'material-ui/List';
+
 import Typography from 'material-ui-next/Typography';
 import {withStyles} from 'material-ui/styles';
 import AccountCircle from 'material-ui-icons/AccountCircle';
@@ -29,7 +29,27 @@ import MenuIcon from 'material-ui-icons/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert'
 import Button from 'material-ui-next/Button';
 import Toolbar from 'material-ui-next/Toolbar';
+// top
+import FaTrophy from 'react-icons/lib/fa/trophy';
+//submission
+import FaUpload from 'react-icons/lib/fa/upload';
+//FaTag
+import FaTag from 'react-icons/lib/fa/tag';
+//Category
+import MdCreateNewFolder from 'react-icons/lib/md/create-new-folder';
 
+//My Submissions
+import FaBarChart from 'react-icons/lib/fa/bar-chart';
+
+//Profile
+import FaUser from 'react-icons/lib/fa/user';
+
+// LogOut
+import FaPowerOff from 'react-icons/lib/fa/power-off';
+import { ListItemIcon, ListItemText } from 'material-ui-next/List';
+import SendIcon from 'material-ui-icons/Send';
+import FaPlus from 'react-icons/lib/fa/plus';
+import FaSearch from 'react-icons/lib/fa/search';
 const styles = {
   root: {
     width: '100%',
@@ -69,6 +89,7 @@ class Header extends Component {
   handleCloseMenu = () => {
     this.setState({ anchorEl: null });
   };
+
   render() {
     const userId = localStorage.getItem(GC_USER_ID)
     const PageMenu = (
@@ -82,33 +103,30 @@ class Header extends Component {
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
         >
-          {<Link to='/'><MenuItem > new </MenuItem></Link>}
-          {<Link to='/top'><MenuItem > top </MenuItem></Link>}
-          {<Link to='/search'><MenuItem> search </MenuItem></Link>}
 
-          {userId &&
-          <div>
-          <Link to='/createcategory'><MenuItem> create category </MenuItem></Link>
-          <Link to='/createtag'><MenuItem> create tag </MenuItem></Link>
-          <Link to='/create'><MenuItem >submit product</MenuItem></Link>
-          </div>
-          }
+
         </Menu>
       );
 
       const LogoutMenu = (
         <Menu
-
           iconButtonElement={
             <IconButton></IconButton>
           }
           targetOrigin={{horizontal: 'right', vertical: 'top'}}
           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
         >
+
+
         {userId &&
         <div>
-        {<Link to={'/profile/'+userId} ><MenuItem primaryText="Profile"></MenuItem></Link>}
-        {<Link to={'/submissionpage/'+userId} ><MenuItem primaryText="My Submissions"></MenuItem></Link>}
+        <MenuItem>
+          <ListItemIcon>
+            <FaUser/>
+          </ListItemIcon>
+          <ListItemText inset primary='Profile'/>
+        </MenuItem>
+
         </div>
         }
 
@@ -125,7 +143,6 @@ class Header extends Component {
             {<Link to='/login' ><MenuItem primaryText="Login"></MenuItem></Link>}
             </div>
         }
-
         </Menu>
       );
 
@@ -154,15 +171,46 @@ class Header extends Component {
             open={this.state.open}
             onClose={this.handleClose}
           >
-          <MenuItem onClick={this.handleClose} component={Link} to="/" > new </MenuItem>
-          <MenuItem onClick={this.handleClose} component={Link} to="/top" > top </MenuItem>
-          <MenuItem onClick={this.handleClose} component={Link} to="/search">search</MenuItem>
+
+          <MenuItem onClick={this.handleClose} component={Link} to="/" >
+            <ListItemIcon >
+              <FaPlus />
+            </ListItemIcon>
+            <ListItemText  inset primary="New" />
+           </MenuItem>
+          <MenuItem onClick={this.handleClose} component={Link} to="/top" >
+            <ListItemIcon >
+              <FaTrophy />
+            </ListItemIcon>
+            <ListItemText  inset primary="Top" />
+          </MenuItem>
+          <MenuItem onClick={this.handleClose} component={Link} to="/search">
+              <ListItemIcon >
+                <FaSearch />
+              </ListItemIcon>
+              <ListItemText  inset primary="Search" />
+          </MenuItem>
 
           {userId &&
           <div>
-          <MenuItem onClick={this.handleClose} component={Link} to="/createcategory"> create category </MenuItem>
-          <MenuItem onClick={this.handleClose} component={Link} to="/createtag"> create tag </MenuItem>
-          <MenuItem onClick={this.handleClose} component={Link} to="/create">submit product</MenuItem>
+          <MenuItem onClick={this.handleClose} component={Link} to="/createcategory">
+              <ListItemIcon >
+                <MdCreateNewFolder />
+              </ListItemIcon>
+              <ListItemText  inset primary="Create Category" />
+          </MenuItem>
+          <MenuItem onClick={this.handleClose} component={Link} to="/createtag">
+              <ListItemIcon >
+                <FaTag />
+              </ListItemIcon>
+              <ListItemText  inset primary="Create Tag" />
+          </MenuItem>
+          <MenuItem onClick={this.handleClose} component={Link} to="/create">
+              <ListItemIcon >
+                <FaUpload />
+              </ListItemIcon>
+              <ListItemText  inset primary="Create Submission" />
+          </MenuItem>
           </div>
           }
           </Menu>
@@ -183,8 +231,18 @@ class Header extends Component {
           >
           {userId &&
           <div>
-          <MenuItem onClick={this.handleCloseLogin} component={Link} to={"/profile/"+userId}>Profile</MenuItem>
-          <MenuItem onClick={this.handleCloseLogin} component={Link} to={"/submissionpage/"+userId}>My Submissions</MenuItem>
+          <MenuItem onClick={this.handleCloseLogin} component={Link} to={"/profile/"+userId}>
+              <ListItemIcon >
+                <FaUser />
+              </ListItemIcon>
+              <ListItemText  inset primary="Profile" />
+          </MenuItem>
+          <MenuItem onClick={this.handleCloseLogin} component={Link} to={"/submissionpage/"+userId}>
+              <ListItemIcon >
+                <FaBarChart />
+              </ListItemIcon>
+              <ListItemText  inset primary="My Submissions" />
+          </MenuItem>
           </div>
           }
 
@@ -194,11 +252,21 @@ class Header extends Component {
               localStorage.removeItem(GC_AUTH_TOKEN)
               this.props.history.push(`/new/1`)
             }}>
-                <MenuItem onClick={this.handleCloseLogin}>Logout</MenuItem>
+                <MenuItem onClick={this.handleCloseLogin}>
+                <ListItemIcon >
+                  <FaPowerOff />
+                </ListItemIcon>
+                <ListItemText  inset primary="Logout" />
+                </MenuItem>
             </div>
             :
                 <div>
-              <MenuItem onClick={this.handleCloseLogin} component={Link} to="/login">Login</MenuItem>
+              <MenuItem onClick={this.handleCloseLogin} component={Link} to="/login">
+              <ListItemIcon >
+                <FaPowerOff />
+              </ListItemIcon>
+              <ListItemText  inset primary="Login" />
+              </MenuItem>
               </div>
           }
           </Menu>
@@ -218,12 +286,8 @@ class Header extends Component {
         </Toolbar>
       </AppBar>
     </div>
-
-
-
     )
   }
-
 }
 
 export default withRouter(Header)
