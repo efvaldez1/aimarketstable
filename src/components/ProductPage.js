@@ -255,9 +255,9 @@ class ProductPage extends Component {
 
         <strong> Share :</strong>
 
-          <Button style={styles.button } href={"https://facebook.com"} > <FaFacebookSquare styles={styles.rightIcon}/></Button>
-          <Button style={styles.button } href={"https://twitter.com"} ><FaTwitterSquare styles={styles.rightIcon}/> </Button>
-          <Button style={styles.button } href={"https://linkedin.com"} > <FaLinkedinSquare styles={styles.rightIcon}/></Button>
+          <Button style={styles.button } href={"https://www.facebook.com/sharer/sharer.php?u=https://intuitionmarket.herokuapp.com/product/"+link.id} > <FaFacebookSquare styles={styles.rightIcon}/></Button>
+          <Button style={styles.button } href={"https://twitter.com/share?url=https://intuitionmarket.herokuapp.com/product/"+link.id+"&hashtag=IntuitionMarket"} ><FaTwitterSquare styles={styles.rightIcon}/> </Button>
+          <Button style={styles.button } href={"https://linkedin.com/shareArticle?mini=true&url=https://intuitionmarket.herokuapp.com/product/"+link.id} > <FaLinkedinSquare styles={styles.rightIcon}/></Button>
 
         </div>
         <div>

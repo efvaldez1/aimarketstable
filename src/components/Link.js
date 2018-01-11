@@ -26,7 +26,7 @@ import Typography from 'material-ui-next/Typography';
 import FaGithub from 'react-icons/lib/fa/github'
 const styles = {
   chip: {
-    margin: 14,
+    margin: 5,
   },
   wrapper: {
     display: 'flex',
@@ -34,11 +34,12 @@ const styles = {
   },
   header:{
     textAlign:'center',
-    fontSize:20,
+    fontSize:25,
     fontWeight:'bold',
   },
   paragraph: {
     margin:20,
+    fontSize:12,
     textIndent:30,
     fontStyle: 'italic',
     paddingLeft: 30,
@@ -101,7 +102,7 @@ handleRequestCloseVotedAgain = () => {
       </CardHeader>
       <CardContent>
 
-      <div style={styles.header}>!!! {this.props.link.title} </div>
+      <div style={styles.header}> {this.props.link.title} </div>
       <div style={styles.paragraph}> {this.props.link.description} </div>
       <div> <strong> URL: </strong> <a href={this.props.link.url}>{this.props.link.url}</a></div>
       <div> <strong> Category: </strong> {this.props.link.category}  </div>
@@ -117,7 +118,7 @@ handleRequestCloseVotedAgain = () => {
       </div>
 
       <div><strong> Submited On:</strong> {this.props.link.createdAt.slice(0,10)} ({timeDifferenceForDate(this.props.link.createdAt)})</div>
-      <div><strong> Last Updated:</strong> ({timeDifferenceForDate(this.props.link.updatedAt)})</div>
+      <div><strong> Last Updated:</strong> {this.props.link.updatedAt.slice(0,10)}  ({timeDifferenceForDate(this.props.link.updatedAt)})</div>
       <br/>
 
       <br/>

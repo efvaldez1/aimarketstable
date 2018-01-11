@@ -92,66 +92,11 @@ class Header extends Component {
 
   render() {
     const userId = localStorage.getItem(GC_USER_ID)
-    const PageMenu = (
-        <Menu
-          iconButtonElement={
-            <IconButton >
-              <MenuIcon/>
-              </IconButton>
-          }
-
-          targetOrigin={{horizontal: 'right', vertical: 'top'}}
-          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-        >
-
-
-        </Menu>
-      );
-
-      const LogoutMenu = (
-        <Menu
-          iconButtonElement={
-            <IconButton></IconButton>
-          }
-          targetOrigin={{horizontal: 'right', vertical: 'top'}}
-          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-        >
-
-
-        {userId &&
-        <div>
-        <MenuItem>
-          <ListItemIcon>
-            <FaUser/>
-          </ListItemIcon>
-          <ListItemText inset primary='Profile'/>
-        </MenuItem>
-
-        </div>
-        }
-
-        {userId ?
-          <div onClick={() => {
-            localStorage.removeItem(GC_USER_ID)
-            localStorage.removeItem(GC_AUTH_TOKEN)
-            this.props.history.push(`/new/1`)
-          }}>
-              <MenuItem primaryText="Logout" />
-          </div>
-          :
-              <div>
-            {<Link to='/login' ><MenuItem primaryText="Login"></MenuItem></Link>}
-            </div>
-        }
-        </Menu>
-      );
-
-      const styles = {
+    const styles = {
         title: {
           cursor: 'pointer',
         },
-      };
-
+    };
 
 
     const anchorEl=this.state;
